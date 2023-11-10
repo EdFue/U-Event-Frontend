@@ -1,0 +1,176 @@
+:root {
+  --color-black: #000;
+  --font-weight-bold: 800;
+  --font-weight-semi-bold: 600;
+  --font-weight-regular: 300;
+  --font-size-large: 30px;
+  --font-size-medium: 16px;
+  --letter-spacing: 1px;
+  --border-radius: 15px;
+  --border-color: #ccc;
+  --transition-duration: 0.2s;
+  --transition-timing-function: ease-in-out;
+  --box-shadow: inset 0px 3px 1px rgba(0, 0, 0, 0.1);
+  --gap-large: 2rem;
+  --gap-medium: 1rem;
+  --gap-small: 0.5rem;
+  --padding-large: 1rem;
+  --padding-medium: 0.5rem 1rem;
+  --padding-small: 0.3rem 0;
+  --color-white: #fff;
+}
+
+.manage-event-card-form {
+  overflow-x: auto;
+  padding: 10px;
+  align-items: center;
+  transition: all var(--transition-duration) var(--transition-timing-function);
+  position: relative;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--gap-medium);
+}
+
+.manage-event-card {
+  flex: 0 0 auto;
+  padding: var(--padding-large);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--gap-large);
+  transition: all var(--transition-duration) var(--transition-timing-function);
+}
+
+.manage-events-body {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 16px;
+  overflow-x: auto;
+  padding: 10px;
+}
+
+.manage-event-card-form-header {
+  border-bottom: 1px solid var(--color-black);
+  padding: var(--padding-small);
+  display: flex;
+  align-items: center;
+
+  gap: var(--gap-medium);
+  animation: move-in 1s var(--transition-timing-function);
+}
+
+.manage-event-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  margin: 6px;
+}
+
+.manage-match-tag {
+  width: 50px;
+  height: 50px;
+  border-radius: 20px;
+  object-fit: cover;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  margin: 10px;
+  font-weight: var(--font-weight-bold);
+}
+
+.manage-card-content {
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  color: #fff;
+  margin-top: 30px;
+}
+
+/* .manage-card-title,
+.manage-card-firstname,
+.manage-card-lastname,
+.manage-card-category,
+.manage-card-date,
+.manage-card-event-time,
+.manage-card-location,
+.manage-card-city,
+.manage-card-postalcode,
+.manage-event-details-text {
+  display: block;
+  width: 100%;
+  margin: 10px 0;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  color: inherit;
+} */
+
+.manage-card-title,
+.manage-card-firstname,
+.manage-card-lastname,
+.manage-card-category,
+.manage-card-date,
+.manage-card-event-time,
+.manage-card-location,
+.manage-card-city,
+.manage-card-postalcode,
+.manage-event-details-text {
+  display: block;
+  width: 100%;
+  margin: 10px 0;
+  /* background: none; */
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  color: inherit;
+}
+
+.manage-input::placeholder {
+  color: #e0e0e0;
+}
+
+.manage-input:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.4);
+}
+
+button {
+  background-color: black;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #fff;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-top: 15px;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: grey;
+}
+
+@media (min-width: 769px) {
+  .manage-event-card {
+    width: calc(33.333% - var(--gap-medium));
+  }
+}
+
+@media (max-width: 768px) {
+  .manage-event-card {
+    width: calc(50% - var(--gap-medium));
+  }
+}
+
+@media (max-width: 480px) {
+  .manage-event-card {
+    width: 100%;
+  }
+}

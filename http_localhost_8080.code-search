@@ -1,0 +1,157 @@
+# Query: http://localhost:8080
+# ContextLines: 1
+
+37 results - 11 files
+
+src\__tests__\api.test.js:
+  56      fetchStub
+  57:       .withArgs(`http://localhost:8080/images/image/${username}`)
+  58        .resolves(
+
+  64      fetchStub
+  65:       .withArgs(`http://localhost:8080/images/${mockUserData[0]}`)
+  66        .resolves(
+
+  80      fetchStub
+  81:       .withArgs(`http://localhost:8080/images/image/${username}`)
+  82        .resolves(
+
+src\__tests__\SidebarAccountStatus.test.js:
+  32      fetchStub
+  33:       .withArgs(`http://localhost:8080/images/image/${username}`)
+  34        .resolves({ json: () => Promise.resolve(mockUserData) });
+  35      fetchStub
+  36:       .withArgs(`http://localhost:8080/images/${mockUserData[0]}`)
+  37        .resolves({ json: () => Promise.resolve(mockImageData) });
+
+  39      // Manually invoke fetchStub as a stand-in for component logic
+  40:     await fetchStub(`http://localhost:8080/images/image/${username}`);
+  41:     await fetchStub(`http://localhost:8080/images/${mockUserData[0]}`);
+  42  
+
+  45        fetchStub,
+  46:       `http://localhost:8080/images/image/${username}`
+  47      );
+
+  49        fetchStub,
+  50:       `http://localhost:8080/images/${mockUserData[0]}`
+  51      );
+
+  57      if (localStorage.getItem("username")) {
+  58:       await fetchStub(`http://localhost:8080/images/image/testuser`);
+  59      }
+
+src\components\Account\Account.jsx:
+   41      let isMounted = true;
+   42:     fetch(`http://localhost:8080/images/image/${username}`)
+   43        .then((res) => res.json())
+
+   63    setTimeout(() => {
+   64:     fetch(`http://localhost:8080/images/${imageId[0]}`)
+   65        .then((res) => res.json())
+
+   83        // fetch data from the backend
+   84:       fetch(`http://localhost:8080/api/users/${username}`)
+   85          .then((res) => res.json())
+
+  104  
+  105:       fetch(`http://localhost:8080/images/uploadImage/${username}`, {
+  106          method: "POST",
+
+  179      fetch(
+  180:       `http://localhost:8080/api/users/${localStorage.getItem("username")}`,
+  181        {
+
+  210    const handleDeleteImage = () => {
+  211:     fetch(`http://localhost:8080/images/deleteImage/${imageId}`, {
+  212        method: "DELETE",
+
+src\components\login\Login.jsx:
+  38  
+  39:   // "http://localhost:8080/api/users/login"
+  40  
+
+  45    //   //send login data to backend using fetchAPI
+  46:   //   fetch("http://localhost:8080/api/users/login", {
+  47    //     method: "POST",
+
+  86      // Make a POST request to your backend endpoint
+  87:     fetch("http://localhost:8080/api/users/login", {
+  88        method: "POST",
+
+src\components\login\RegisterOverlay2.jsx:
+  70      // Make a POST request to your backend endpoint
+  71:     fetch("http://localhost:8080/api/users", {
+  72        method: "POST",
+
+src\components\mainui\CreateEvent.jsx:
+   28      // fetch data from the backend
+   29:     fetch("http://localhost:8080/api/events")
+   30        .then((res) => res.json())
+
+  134      // Make a POST request to your backend endpoint
+  135:     fetch("http://localhost:8080/api/events", {
+  136        method: "POST",
+
+src\components\mainui\EventBoard.jsx:
+  42    // useEffect(() => {
+  43:   //   fetch("http://localhost:8080/api/events")
+  44    //     .then((res) => res.json())
+
+src\components\mainui\EventCard.jsx:
+  41      // fetch data from the backend
+  42:     fetch(`http://localhost:8080/images/image/${username}`)
+  43        .then((res) => res.json())
+
+  61      let isMounted = true;
+  62:     fetch(`http://localhost:8080/images/${imageId}`)
+  63        .then((res) => res.json())
+
+src\components\mainui\EventDetails.jsx:
+   78      // fetch data from the backend
+   79:     fetch(`http://localhost:8080/images/image/${username}`)
+   80        .then((res) => res.json())
+
+   93      setTimeout(() => {
+   94:       fetch(`http://localhost:8080/images/${imageId}`)
+   95          .then((res) => res.json())
+
+  125      e.preventDefault();
+  126:     // http://localhost:8080/api/users/50cent@email.com/events/13
+  127  
+
+  129        // Unjoin Event (DELETE REQUEST)
+  130:       // http://localhost:8080/api/users/50cent@email.com/events/13/unjoin
+  131        fetch(
+  132:         `http://localhost:8080/api/users/${loggedInUser}/events/${eventId}/unjoin`,
+  133          {
+
+  154        fetch(
+  155:         `http://localhost:8080/api/users/${loggedInUser}/events/${eventId}`,
+  156          {
+
+src\components\mainui\ManageEvents.jsx:
+  10    useEffect(() => {
+  11:     fetch("http://localhost:8080/api/events")
+  12        .then((res) => {
+
+  26    const deleteEvent = (id) => {
+  27:     fetch(`http://localhost:8080/api/events/${id}`, {
+  28        method: "DELETE",
+
+  67    const handleEditSubmit = (id) => {
+  68:     fetch(`http://localhost:8080/api/events/update/${id}`, {
+  69        method: "PUT",
+
+src\handlers\api.js:
+   4    try {
+   5:     const response = await fetch("http://localhost:8080/api/events");
+   6      if (!response.ok) {
+
+  17      const responseUserData = await fetch(
+  18:       `http://localhost:8080/images/image/${username}`
+  19      );
+
+  23      const responseImage = await fetch(
+  24:       `http://localhost:8080/images/${imageId}`
+  25      );
