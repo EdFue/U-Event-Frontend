@@ -94,13 +94,13 @@ const EventDetails = () => {
   const handleJoinEvent = (e) => {
     const loggedInUser = localStorage.getItem("username");
     e.preventDefault();
-    // https://u-event-frontend-20ddc44bb59c.herokuapp.com/api/users/50cent@email.com/events/13
+    // https://u-event-backend-d86136b87ee9.herokuapp.com/api/users/50cent@email.com/events/13
 
     if (joinStatus) {
       // Unjoin Event (DELETE REQUEST)
-      // https://u-event-frontend-20ddc44bb59c.herokuapp.com/api/users/50cent@email.com/events/13/unjoin
+      // https://u-event-backend-d86136b87ee9.herokuapp.com/api/users/50cent@email.com/events/13/unjoin
       fetch(
-        `https://u-event-frontend-20ddc44bb59c.herokuapp.com/api/users/${loggedInUser}/events/${eventId}/unjoin`,
+        `https://u-event-backend-d86136b87ee9.herokuapp.com/api/users/${loggedInUser}/events/${eventId}/unjoin`,
         {
           method: "DELETE",
           headers: {
@@ -123,7 +123,7 @@ const EventDetails = () => {
     } else {
       // Join Event
       fetch(
-        `https://u-event-frontend-20ddc44bb59c.herokuapp.com/api/users/${loggedInUser}/events/${eventId}`,
+        `https://u-event-backend-d86136b87ee9.herokuapp.com/api/users/${loggedInUser}/events/${eventId}`,
         {
           method: "POST",
           headers: {

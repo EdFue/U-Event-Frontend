@@ -8,7 +8,7 @@ const ManageEvents = () => {
   const [editingEventData, setEditingEventData] = useState(null);
 
   useEffect(() => {
-    fetch("https://u-event-frontend-20ddc44bb59c.herokuapp.com/api/events")
+    fetch("https://u-event-backend-d86136b87ee9.herokuapp.com/api/events")
       .then((res) => {
         if (!res.ok) {
           throw new Error("Failed to fetch events.");
@@ -24,7 +24,7 @@ const ManageEvents = () => {
   }, []);
 
   const deleteEvent = (id) => {
-    fetch(`https://u-event-frontend-20ddc44bb59c.herokuapp.com/api/events/${id}`, {
+    fetch(`https://u-event-backend-d86136b87ee9.herokuapp.com/api/events/${id}`, {
       method: "DELETE",
     })
       .then((res) => {
@@ -65,7 +65,7 @@ const ManageEvents = () => {
   };
 
   const handleEditSubmit = (id) => {
-    fetch(`https://u-event-frontend-20ddc44bb59c.herokuapp.com/api/events/update/${id}`, {
+    fetch(`https://u-event-backend-d86136b87ee9.herokuapp.com/api/events/update/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

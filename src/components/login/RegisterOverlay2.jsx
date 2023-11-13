@@ -68,7 +68,7 @@ const RegistrationOverlay2 = ({ onClose, onRegisterEmail }) => {
     console.log(formData);
 
     // Make a POST request to your backend endpoint
-    fetch("https://u-event-frontend-20ddc44bb59c.herokuapp.com/api/users", {
+    fetch("https://u-event-backend-d86136b87ee9.herokuapp.com/api/users", {
       method: "POST",
       body: JSON.stringify(createForm),
       headers: {

@@ -59,7 +59,7 @@ describe("API", () => {
     const mockImageData = { image: "base64ImageData" };
 
     fetchStub
-      .withArgs(`https://u-event-frontend-20ddc44bb59c.herokuapp.com/images/image/${username}`)
+      .withArgs(`https://u-event-backend-d86136b87ee9.herokuapp.com/images/image/${username}`)
       .resolves(
         new Response(JSON.stringify(mockUserData), {
           status: 200,
@@ -67,7 +67,7 @@ describe("API", () => {
         })
       );
     fetchStub
-      .withArgs(`https://u-event-frontend-20ddc44bb59c.herokuapp.com/images/${mockUserData[0]}`)
+      .withArgs(`https://u-event-backend-d86136b87ee9.herokuapp.com/images/${mockUserData[0]}`)
       .resolves(
         new Response(JSON.stringify(mockImageData), {
           status: 200,
@@ -83,7 +83,7 @@ describe("API", () => {
   it("fetchUserImage should throw an error on fetch failure", async () => {
     const username = "testuser";
     fetchStub
-      .withArgs(`https://u-event-frontend-20ddc44bb59c.herokuapp.com/images/image/${username}`)
+      .withArgs(`https://u-event-backend-d86136b87ee9.herokuapp.com/images/image/${username}`)
       .resolves(
         new Response(null, {
           status: 500,
@@ -106,7 +106,7 @@ describe("API", () => {
     const mockUserDetails = { id: 1, name: "Test User" };
 
     fetchStub
-      .withArgs(`https://u-event-frontend-20ddc44bb59c.herokuapp.com/images/image/${username}`)
+      .withArgs(`https://u-event-backend-d86136b87ee9.herokuapp.com/images/image/${username}`)
       .resolves(
         new Response(JSON.stringify(mockUserDetails), {
           status: 200,
@@ -123,7 +123,7 @@ describe("API", () => {
     const username = "testuser";
 
     fetchStub
-      .withArgs(`https://u-event-frontend-20ddc44bb59c.herokuapp.com/images/image/${username}`)
+      .withArgs(`https://u-event-backend-d86136b87ee9.herokuapp.com/images/image/${username}`)
       .resolves(
         new Response(null, {
           status: 500,
@@ -144,7 +144,7 @@ describe("API", () => {
     const imageId = "12345";
     const mockImageData = { image: "base64ImageData" };
 
-    fetchStub.withArgs(`https://u-event-frontend-20ddc44bb59c.herokuapp.com/images/${imageId}`).resolves(
+    fetchStub.withArgs(`https://u-event-backend-d86136b87ee9.herokuapp.com/images/${imageId}`).resolves(
       new Response(JSON.stringify(mockImageData), {
         status: 200,
         headers: { "Content-Type": "application/json" },
@@ -159,7 +159,7 @@ describe("API", () => {
   it("fetchImageData should throw an error on fetch failure", async () => {
     const imageId = "12345";
 
-    fetchStub.withArgs(`https://u-event-frontend-20ddc44bb59c.herokuapp.com/images/${imageId}`).resolves(
+    fetchStub.withArgs(`https://u-event-backend-d86136b87ee9.herokuapp.com/images/${imageId}`).resolves(
       new Response(null, {
         status: 500,
       })
