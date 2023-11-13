@@ -159,9 +159,20 @@
   outline: 0.9px solid #cccccc;
   font-weight: 800;
   font-size: 16px;
-  padding: 0rem 1rem;
+  /* padding: 0rem 1rem; */
   border-radius: 10px;
   background: var(--primary-white);
   background: none;
   color: var(--primary-white);
 }
+/* .attend-btn-2 {
+  border: none;
+  outline: 0.9px solid #cccccc;
+  font-weight: 800;
+  font-size: 16px;
+  padding: 0rem 1rem !important;
+  border-radius: 10px;
+  background: var(--primary-white);
+  background: none;
+  color: var(--primary-white);
+} */

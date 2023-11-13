@@ -5,7 +5,6 @@ import "../../css/EventBoard.css";
 import "../../css/EventCard.css";
 import rectImageOne from "../../assets/right-rect-1.svg";
 import feedIcon from "../../assets/feed-icon.svg";
-
 import {
   handleFilterChange,
   handleSearchChange,
@@ -41,7 +40,7 @@ const EventBoard = () => {
 
   // Fetch events from the backend
   // useEffect(() => {
-  //   fetch("https://u-event-backend-d86136b87ee9.herokuapp.com/api/events")
+  //   fetch("http://localhost:8080/api/events")
   //     .then((res) => res.json())
   //     .then((data) => {
   //       setData(data);
@@ -63,11 +62,6 @@ const EventBoard = () => {
   };
 
   // Move Handlers to Handler.js -----------------------------
-  
-  if (!localStorage.getItem("token") && !localStorage.getItem("username")) { 
-    localStorage.clear(); 
-    window.location.href = "/login";
-  } 
 
   return (
     <section className="event-board" data-testid="event-board">

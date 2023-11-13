@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Link, Params } from "react-router-dom";
+import { Link, Params, redirect } from "react-router-dom";
 import "../../css/EventDetails.css";
 import { AvatarImage } from "../commonElements";
+import { fetchUserDetails, fetchImageData } from "../../handlers/api"; // Import the new API functions
 
 // Use the useLocation hook to get the event object passed from the EventCard component
 import { useLocation } from "react-router-dom";
@@ -51,130 +52,11 @@ const TagComponent = ({ tags }) => {
 
 // TODO-Complete: Main EventDetails component + subcomponents
 const EventDetails = () => {
-  // REQUESTS
-  // get username from local storage and use it to get user details from backend
   const [imageBase64, setImageBase64] = useState(null);
-  const [imageId, setImageId] = useState([0]);
-
-  // fetch the images associated with the current username
-  const [userData, setUserData] = useState([]);
-
-  // Get the join status of the event
   const [joinStatus, setJoinStatus] = useState(false);
-
-  // const handleEventJoinStatus = () => {
-  //   if (joinStatus) {
-  //     setJoinStatus(false);
-  //     console.log("Join Status: ", joinStatus);
-  //   } else {
-  //     setJoinStatus(true);
-  //     console.log("Join Status: ", joinStatus);
-  //   }
-  // };
-
-  // Fetch
-
-  useEffect(() => {
-    // fetch data from the backend
-    fetch(`https://u-event-backend-d86136b87ee9.herokuapp.com/images/image/${username}`)
-      .then((res) => res.json())
-      .then((userData) => {
-        // set the state of the user data
-        setUserData(userData);
-        setImageId(userData); // this is the image ID for the user profile picture
-      })
-      .catch((error) => {
-        setImageBase64(null); // set image to null if there is an error
-      });
-  }, []);
-
-  // DISPLAY THE IMAGE passing the first ID -----
-  useEffect(() => {
-    setTimeout(() => {
-      fetch(`https://u-event-backend-d86136b87ee9.herokuapp.com/images/${imageId}`)
-        .then((res) => res.json())
-        .then((data) => {
-          // Extract the base64 image data from the JSON response
-          const base64String = data.image;
-          setImageBase64(base64String);
-
-          // console.log("Image Base64: ", base64String);
-        })
-        .catch((error) => {
-          setImageBase64(null); // set image to null if there is an error
-        });
-    }, 100);
-  }, [imageId]);
-  // REQUESTS
-  // The useLocation hook returns the event object passed from the EventCard component from the EventCard component
   const loc = useLocation();
-  const { event } = loc.state || {}; // Destructure the event object from the location object
-
-  // Fetch the event details from the event object and check if the user is attending the event from local storage
-  useEffect(() => {
-    const { attendees } = event;
-    const user = localStorage.getItem("username");
-    if (attendees.includes(user)) {
-      setJoinStatus(true);
-    }
-  }, []);
-
-  // Allows users to join the event
-  const handleJoinEvent = (e) => {
-    const loggedInUser = localStorage.getItem("username");
-    e.preventDefault();
-    // https://u-event-backend-d86136b87ee9.herokuapp.com/api/users/50cent@email.com/events/13
-
-    if (joinStatus) {
-      // Unjoin Event (DELETE REQUEST)
-      // https://u-event-backend-d86136b87ee9.herokuapp.com/api/users/50cent@email.com/events/13/unjoin
-      fetch(
-        `https://u-event-backend-d86136b87ee9.herokuapp.com/api/users/${loggedInUser}/events/${eventId}/unjoin`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            eventId,
-            attendees: [loggedInUser],
-          }),
-        }
-      )
-        .then((data) => {
-          setJoinStatus(false);
-          console.log("Unjoin Event: ", data);
-          console.log("Join Status: ", joinStatus);
-        })
-        .catch((error) => {
-          console.log("Error: ", error);
-        });
-    } else {
-      // Join Event
-      fetch(
-        `https://u-event-backend-d86136b87ee9.herokuapp.com/api/users/${loggedInUser}/events/${eventId}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            eventId,
-            attendees: [loggedInUser],
-          }),
-        }
-      )
-        .then((data) => {
-          setJoinStatus(true);
-          console.log("Join Event: ", data);
-          console.log("Join Status: ", joinStatus);
-        })
-        .catch((error) => {
-          console.log("Error: ", error);
-        });
-    }
-  };
-
+  const { event } = loc.state || {};
+  const loggedInUser = localStorage.getItem("username");
   const {
     eventId,
     attendees,
@@ -188,6 +70,81 @@ const EventDetails = () => {
   } = event;
 
   const userName_s = `${firstName} ${lastName}`;
+
+  useEffect(() => {
+    fetchUserDetails(username)
+      .then((userData) => {
+        const imageId = userData[0]; // Assuming the first item is the image ID
+        fetchImageData(imageId)
+          .then((data) => {
+            setImageBase64(data.image);
+          })
+          .catch(() => setImageBase64(null));
+      })
+      .catch(() => setImageBase64(null));
+  }, [username]);
+
+  useEffect(() => {
+    if (attendees.includes(loggedInUser)) {
+      setJoinStatus(true);
+    }
+  }, [attendees, loggedInUser]);
+
+  // Allows users to join the event
+  const handleJoinEvent = (e) => {
+    const loggedInUser = localStorage.getItem("username");
+    e.preventDefault();
+    // http://localhost:8080/api/users/50cent@email.com/events/13
+
+    if (joinStatus) {
+      // Unjoin Event (DELETE REQUEST)
+      // http://localhost:8080/api/users/50cent@email.com/events/13/unjoin
+      fetch(
+        `http://localhost:8080/api/users/${loggedInUser}/events/${eventId}/unjoin`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            eventId,
+            attendees: [loggedInUser],
+          }),
+        }
+      )
+        .then((data) => {
+          setJoinStatus(false);
+          // console.log("Unjoin Event: ", data);
+          // console.log("Join Status: ", joinStatus);
+        })
+        .catch((error) => {
+          console.log("Error: ", error);
+        });
+    } else {
+      // Join Event
+      fetch(
+        `http://localhost:8080/api/users/${loggedInUser}/events/${eventId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            eventId,
+            attendees: [loggedInUser],
+          }),
+        }
+      )
+        .then((data) => {
+          setJoinStatus(true);
+          // console.log("Join Event: ", data);
+          // console.log("Join Status: ", joinStatus);
+        })
+        .catch((error) => {
+          console.log("Error: ", error);
+        });
+    }
+  };
 
   return (
     <section className="event-detail">
@@ -223,6 +180,9 @@ const EventDetails = () => {
                 width={100}
                 height={100}
                 alt="image_alt"
+                style={{
+                  objectFit: "cover",
+                }}
               />
             ) : (
               <img

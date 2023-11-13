@@ -99,3 +99,7 @@
     justify-content: center;
   }
 }
+
+.App .content {
+  flex-grow: 1;
+}

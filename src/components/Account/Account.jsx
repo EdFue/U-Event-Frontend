@@ -39,7 +39,7 @@ const Account = () => {
   useEffect(() => {
     // fetch data from the backend
     let isMounted = true;
-    fetch(`https://u-event-backend-d86136b87ee9.herokuapp.com/images/image/${username}`)
+    fetch(`http://localhost:8080/images/image/${username}`)
       .then((res) => res.json())
       .then((userData) => {
         if (isMounted) {
@@ -61,7 +61,7 @@ const Account = () => {
 
   // DISPLAY THE IMAGE passing the first ID -----
   setTimeout(() => {
-    fetch(`https://u-event-backend-d86136b87ee9.herokuapp.com/images/${imageId[0]}`)
+    fetch(`http://localhost:8080/images/${imageId[0]}`)
       .then((res) => res.json())
       .then((data) => {
         // Extract the base64 image data from the JSON response
@@ -81,7 +81,7 @@ const Account = () => {
   useEffect(() => {
     setTimeout(() => {
       // fetch data from the backend
-      fetch(`https://u-event-backend-d86136b87ee9.herokuapp.com/api/users/${username}`)
+      fetch(`http://localhost:8080/api/users/${username}`)
         .then((res) => res.json())
         .then((userData) => {
           setUserData(userData);
@@ -102,7 +102,7 @@ const Account = () => {
       const formData = new FormData();
       formData.append("file", file);
 
-      fetch(`https://u-event-backend-d86136b87ee9.herokuapp.com/images/uploadImage/${username}`, {
+      fetch(`http://localhost:8080/images/uploadImage/${username}`, {
         method: "POST",
         body: formData,
       })
@@ -177,7 +177,7 @@ const Account = () => {
 
     // Make a POST request to your backend endpoint
     fetch(
-      `https://u-event-backend-d86136b87ee9.herokuapp.com/api/users/${localStorage.getItem("username")}`,
+      `http://localhost:8080/api/users/${localStorage.getItem("username")}`,
       {
         method: "PUT",
         body: JSON.stringify(createForm),
@@ -208,7 +208,7 @@ const Account = () => {
 
   // Handle the delete image button
   const handleDeleteImage = () => {
-    fetch(`https://u-event-backend-d86136b87ee9.herokuapp.com/images/deleteImage/${imageId}`, {
+    fetch(`http://localhost:8080/images/deleteImage/${imageId}`, {
       method: "DELETE",
     })
       .then((response) => {
@@ -310,6 +310,9 @@ const Account = () => {
                           width={100}
                           height={100}
                           alt="image_alt"
+                          style={{
+                            objectFit: "cover",
+                          }}
                         />
                       ) : (
                         <img
@@ -341,7 +344,15 @@ const Account = () => {
                     </div>
                   </div>
                   <input type="file" onChange={handleFileChange} />
-                  <button onClick={handleUpload}>Upload Image</button>
+                  <button
+                    onClick={(e) => {
+                      handleUpload(e);
+                      // redirect to the same page
+                      window.location.reload();
+                    }}
+                  >
+                    Upload Image
+                  </button>
                 </div>
               </div>
             </div>

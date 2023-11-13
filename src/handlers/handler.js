@@ -26,4 +26,3 @@ export const filterData = (filter, data) => {
 };
 
 // Fetching User Image ---------------------------------------------------------
-

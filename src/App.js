@@ -1,6 +1,6 @@
 import React from "react";
 import MainUI from "./components/mainui/MainUI";
-import Sidebar from "./components/mainui/sidebar/Sidebar";
+import Sidebar from "./components/sidebar/Sidebar";
 
 import Account from "./components/Account/Account";
 import EventDetails from "./components/mainui/EventDetails";
@@ -11,6 +11,7 @@ import "./css/Account.css";
 import "./App.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import ManageEvents from "./components/mainui/ManageEvents";
+import Footer from "./components/footer/Footer";
 
 function App() {
   return (
@@ -30,12 +31,13 @@ function App() {
             <Route path="/create-events" element={<CreateEvent />} />
             <Route path="/manage-events" element={<ManageEvents />} />
           </Routes>
+          <p className="component-heading">
+            <p className="component-text-1">U-</p>{" "}
+            <p className="component-text-2">Event</p>
+          </p>
         </div>
+        <Footer />
       </Router>
-      <p className="component-heading">
-        <p className="component-text-1">U-</p>{" "}
-        <p className="component-text-2">Event</p>
-      </p>
     </>
   );
 }

@@ -37,7 +37,7 @@
   transition: var(--base-transition); /* Smooth expand/collapse animation */
 }
 .user-profile-container.edit {
-  height: 800px;
+  height: 875px;
   transition: var(--base-transition); /* Smooth expand/collapse animation */
 }
 
@@ -119,8 +119,9 @@
 }
 
 .user-details-card-body-content {
-  transition: max-height 0.3s ease; /* Smooth expand/collapse 
+  transition: all 0.3s ease; /* Smooth expand/collapse
   animation */
+  height: 100%;
 }
 
 /* User Details Card form styles */

@@ -1,6 +1,11 @@
 import { expect } from "chai";
 import sinon from "sinon";
-import { fetchEvents, fetchUserImage } from "../handlers/api"; // Adjust the path as per your project structure
+import {
+  fetchEvents,
+  fetchUserImage,
+  fetchImageData,
+  fetchUserDetails,
+} from "../handlers/api"; // Adjust the path as per your project structure
 
 describe("API", () => {
   let fetchStub;
@@ -54,7 +59,7 @@ describe("API", () => {
     const mockImageData = { image: "base64ImageData" };
 
     fetchStub
-      .withArgs(`https://u-event-backend-d86136b87ee9.herokuapp.com/images/image/${username}`)
+      .withArgs(`http://localhost:8080/images/image/${username}`)
       .resolves(
         new Response(JSON.stringify(mockUserData), {
           status: 200,
@@ -62,7 +67,7 @@ describe("API", () => {
         })
       );
     fetchStub
-      .withArgs(`https://u-event-backend-d86136b87ee9.herokuapp.com/images/${mockUserData[0]}`)
+      .withArgs(`http://localhost:8080/images/${mockUserData[0]}`)
       .resolves(
         new Response(JSON.stringify(mockImageData), {
           status: 200,
@@ -78,7 +83,7 @@ describe("API", () => {
   it("fetchUserImage should throw an error on fetch failure", async () => {
     const username = "testuser";
     fetchStub
-      .withArgs(`https://u-event-backend-d86136b87ee9.herokuapp.com/images/image/${username}`)
+      .withArgs(`http://localhost:8080/images/image/${username}`)
       .resolves(
         new Response(null, {
           status: 500,
@@ -91,6 +96,81 @@ describe("API", () => {
     } catch (error) {
       expect(error).to.be.an("error");
       expect(error.message).to.equal("Unexpected end of JSON input");
+    }
+  });
+
+  // Updated Test:
+  // Test for Successful fetchUserDetails Execution
+  it("fetchUserDetails should return user details on successful fetch", async () => {
+    const username = "testuser";
+    const mockUserDetails = { id: 1, name: "Test User" };
+
+    fetchStub
+      .withArgs(`http://localhost:8080/images/image/${username}`)
+      .resolves(
+        new Response(JSON.stringify(mockUserDetails), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        })
+      );
+
+    const userDetails = await fetchUserDetails(username);
+    expect(userDetails).to.deep.equal(mockUserDetails);
+  });
+
+  // Test for Failed fetchUserDetails Execution
+  it("fetchUserDetails should throw an error on fetch failure", async () => {
+    const username = "testuser";
+
+    fetchStub
+      .withArgs(`http://localhost:8080/images/image/${username}`)
+      .resolves(
+        new Response(null, {
+          status: 500,
+        })
+      );
+
+    try {
+      await fetchUserDetails(username);
+      throw new Error("fetchUserDetails did not throw");
+    } catch (error) {
+      expect(error).to.be.an("error");
+      expect(error.message).to.equal("HTTP error! status: 500");
+    }
+  });
+
+  // Test for Successful fetchImageData Execution
+  it("fetchImageData should return image data on successful fetch", async () => {
+    const imageId = "12345";
+    const mockImageData = { image: "base64ImageData" };
+
+    fetchStub.withArgs(`http://localhost:8080/images/${imageId}`).resolves(
+      new Response(JSON.stringify(mockImageData), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      })
+    );
+
+    const imageData = await fetchImageData(imageId);
+    expect(imageData).to.deep.equal(mockImageData);
+  });
+
+  // Test for Failed fetchImageData Execution
+  it("fetchImageData should throw an error on fetch failure", async () => {
+    const imageId = "12345";
+
+    fetchStub.withArgs(`http://localhost:8080/images/${imageId}`).resolves(
+      new Response(null, {
+        status: 500,
+      })
+    );
+
+    try {
+      await fetchImageData(imageId);
+      throw new Error("fetchImageData did not throw");
+    } catch (error) {
+      expect(error).to.be.an("error");
+      expect(error.message).to.equal("HTTP error! status: 500");
     }
   });
 });

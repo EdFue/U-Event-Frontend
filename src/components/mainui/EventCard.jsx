@@ -39,7 +39,7 @@ const EventCard = ({
   useEffect(() => {
     let isMounted = true;
     // fetch data from the backend
-    fetch(`https://u-event-backend-d86136b87ee9.herokuapp.com/images/image/${username}`)
+    fetch(`http://localhost:8080/images/image/${username}`)
       .then((res) => res.json())
       .then((data) => {
         if (isMounted) {
@@ -59,7 +59,7 @@ const EventCard = ({
   // DISPLAY THE IMAGE passing the first ID -----
   useEffect(() => {
     let isMounted = true;
-    fetch(`https://u-event-backend-d86136b87ee9.herokuapp.com/images/${imageId}`)
+    fetch(`http://localhost:8080/images/${imageId}`)
       .then((res) => res.json())
       .then((data) => {
         if (isMounted) {
@@ -101,6 +101,9 @@ const EventCard = ({
           width={100}
           height={100}
           alt="image_alt"
+          style={{
+            objectFit: "cover",
+          }}
         />
       ) : (
         <img

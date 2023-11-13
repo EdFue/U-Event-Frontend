@@ -2,7 +2,7 @@ import React from "react";
 import { expect } from "chai";
 import { render, screen } from "@testing-library/react";
 import sinon from "sinon";
-import SidebarAccountStatus from "../components/mainui/sidebar/SidebarAccountStatus";
+import SidebarAccountStatus from "../components/sidebar/SidebarAccountStatus";
 
 describe("SidebarAccountStatus Component Tests", () => {
   let fetchStub;
@@ -30,24 +30,24 @@ describe("SidebarAccountStatus Component Tests", () => {
 
     // Setup fetchStub to resolve for specific calls
     fetchStub
-      .withArgs(`https://u-event-backend-d86136b87ee9.herokuapp.com/images/image/${username}`)
+      .withArgs(`http://localhost:8080/images/image/${username}`)
       .resolves({ json: () => Promise.resolve(mockUserData) });
     fetchStub
-      .withArgs(`https://u-event-backend-d86136b87ee9.herokuapp.com/images/${mockUserData[0]}`)
+      .withArgs(`http://localhost:8080/images/${mockUserData[0]}`)
       .resolves({ json: () => Promise.resolve(mockImageData) });
 
     // Manually invoke fetchStub as a stand-in for component logic
-    await fetchStub(`https://u-event-backend-d86136b87ee9.herokuapp.com/images/image/${username}`);
-    await fetchStub(`https://u-event-backend-d86136b87ee9.herokuapp.com/images/${mockUserData[0]}`);
+    await fetchStub(`http://localhost:8080/images/image/${username}`);
+    await fetchStub(`http://localhost:8080/images/${mockUserData[0]}`);
 
     // Verify fetch calls
     sinon.assert.calledWith(
       fetchStub,
-      `https://u-event-backend-d86136b87ee9.herokuapp.com/images/image/${username}`
+      `http://localhost:8080/images/image/${username}`
     );
     sinon.assert.calledWith(
       fetchStub,
-      `https://u-event-backend-d86136b87ee9.herokuapp.com/images/${mockUserData[0]}`
+      `http://localhost:8080/images/${mockUserData[0]}`
     );
   });
   it("does not fetch data when username is absent", async () => {
@@ -55,7 +55,7 @@ describe("SidebarAccountStatus Component Tests", () => {
 
     // Simulate the component mounting logic
     if (localStorage.getItem("username")) {
-      await fetchStub(`https://u-event-backend-d86136b87ee9.herokuapp.com/images/image/testuser`);
+      await fetchStub(`http://localhost:8080/images/image/testuser`);
     }
 
     // Verify fetch was not called
