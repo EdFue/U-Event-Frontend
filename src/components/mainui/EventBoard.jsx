@@ -5,6 +5,7 @@ import "../../css/EventBoard.css";
 import "../../css/EventCard.css";
 import rectImageOne from "../../assets/right-rect-1.svg";
 import feedIcon from "../../assets/feed-icon.svg";
+
 import {
   handleFilterChange,
   handleSearchChange,
@@ -62,6 +63,11 @@ const EventBoard = () => {
   };
 
   // Move Handlers to Handler.js -----------------------------
+  
+  if (!localStorage.getItem("token") && !localStorage.getItem("username")) { 
+    localStorage.clear(); 
+    window.location.href = "/login";
+  } 
 
   return (
     <section className="event-board" data-testid="event-board">
