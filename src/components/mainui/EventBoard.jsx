@@ -40,7 +40,7 @@ const EventBoard = () => {
 
   // Fetch events from the backend
   // useEffect(() => {
-  //   fetch("http://localhost:8080/api/events")
+  //   fetch("https://u-event-frontend-20ddc44bb59c.herokuapp.com/api/events")
   //     .then((res) => res.json())
   //     .then((data) => {
   //       setData(data);

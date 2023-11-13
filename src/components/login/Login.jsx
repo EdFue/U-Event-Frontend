@@ -36,14 +36,14 @@ const Login = () => {
 
   // handle Login
 
-  // "http://localhost:8080/api/users/login"
+  // "https://u-event-frontend-20ddc44bb59c.herokuapp.com/api/users/login"
 
   // const handleLogin = (e) => {
   //   e.preventDefault();
 
   //   const { username, password } = this.state;
   //   //send login data to backend using fetchAPI
-  //   fetch("http://localhost:8080/api/users/login", {
+  //   fetch("https://u-event-frontend-20ddc44bb59c.herokuapp.com/api/users/login", {
   //     method: "POST",
   //     headers: {
   //       "Content-Type": "application/json",
@@ -84,7 +84,7 @@ const Login = () => {
     console.log(createForm);
 
     // Make a POST request to your backend endpoint
-    fetch("http://localhost:8080/api/users/login", {
+    fetch("https://u-event-frontend-20ddc44bb59c.herokuapp.com/api/users/login", {
       method: "POST",
       body: JSON.stringify(createForm),
       headers: {

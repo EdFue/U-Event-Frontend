@@ -39,7 +39,7 @@ const Account = () => {
   useEffect(() => {
     // fetch data from the backend
     let isMounted = true;
-    fetch(`http://localhost:8080/images/image/${username}`)
+    fetch(`https://u-event-frontend-20ddc44bb59c.herokuapp.com/images/image/${username}`)
       .then((res) => res.json())
       .then((userData) => {
         if (isMounted) {
@@ -61,7 +61,7 @@ const Account = () => {
 
   // DISPLAY THE IMAGE passing the first ID -----
   setTimeout(() => {
-    fetch(`http://localhost:8080/images/${imageId[0]}`)
+    fetch(`https://u-event-frontend-20ddc44bb59c.herokuapp.com/images/${imageId[0]}`)
       .then((res) => res.json())
       .then((data) => {
         // Extract the base64 image data from the JSON response
@@ -81,7 +81,7 @@ const Account = () => {
   useEffect(() => {
     setTimeout(() => {
       // fetch data from the backend
-      fetch(`http://localhost:8080/api/users/${username}`)
+      fetch(`https://u-event-frontend-20ddc44bb59c.herokuapp.com/api/users/${username}`)
         .then((res) => res.json())
         .then((userData) => {
           setUserData(userData);
@@ -102,7 +102,7 @@ const Account = () => {
       const formData = new FormData();
       formData.append("file", file);
 
-      fetch(`http://localhost:8080/images/uploadImage/${username}`, {
+      fetch(`https://u-event-frontend-20ddc44bb59c.herokuapp.com/images/uploadImage/${username}`, {
         method: "POST",
         body: formData,
       })
@@ -177,7 +177,7 @@ const Account = () => {
 
     // Make a POST request to your backend endpoint
     fetch(
-      `http://localhost:8080/api/users/${localStorage.getItem("username")}`,
+      `https://u-event-frontend-20ddc44bb59c.herokuapp.com/api/users/${localStorage.getItem("username")}`,
       {
         method: "PUT",
         body: JSON.stringify(createForm),
@@ -208,7 +208,7 @@ const Account = () => {
 
   // Handle the delete image button
   const handleDeleteImage = () => {
-    fetch(`http://localhost:8080/images/deleteImage/${imageId}`, {
+    fetch(`https://u-event-frontend-20ddc44bb59c.herokuapp.com/images/deleteImage/${imageId}`, {
       method: "DELETE",
     })
       .then((response) => {

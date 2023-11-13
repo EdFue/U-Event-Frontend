@@ -26,7 +26,7 @@ const CreateEvent = () => {
   const [data, setData] = useState([]);
   useEffect(() => {
     // fetch data from the backend
-    fetch("http://localhost:8080/api/events")
+    fetch("https://u-event-frontend-20ddc44bb59c.herokuapp.com/api/events")
       .then((res) => res.json())
       .then((data) => {
         setData(data);
@@ -132,7 +132,7 @@ const CreateEvent = () => {
     console.log(createForm);
 
     // Make a POST request to your backend endpoint
-    fetch("http://localhost:8080/api/events", {
+    fetch("https://u-event-frontend-20ddc44bb59c.herokuapp.com/api/events", {
       method: "POST",
       body: JSON.stringify(createForm),
       headers: {
