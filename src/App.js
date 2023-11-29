@@ -1,5 +1,5 @@
 import React from "react";
-import MainUI from "./components/mainui/MainUI";
+import EventBoard from "./components/mainui/EventBoard";
 import Sidebar from "./components/sidebar/Sidebar";
 
 import Account from "./components/Account/Account";
@@ -24,7 +24,7 @@ function App() {
           </Routes>
           <Sidebar />
           <Routes>
-            <Route path="/" element={<MainUI />} />
+            <Route path="/" element={<EventBoard />} />
             <Route path="/account" element={<Account />} />
             <Route path="/login/register" element={<Login />} />
             <Route path="/event-details" element={<EventDetails />} />

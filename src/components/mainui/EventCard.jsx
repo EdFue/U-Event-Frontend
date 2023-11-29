@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../../css/EventCard.css";
 import { AvatarImage } from "../commonElements";
+import { fetchImageId, fetchAndSetImageBase64 } from "../../handlers/api";
 
 const EventCard = ({
   width,
@@ -20,10 +21,8 @@ const EventCard = ({
   tags,
   backgroundImage,
 }) => {
-  // get username from local storage and use it to get user details from backend
   const [imageBase64, setImageBase64] = useState(null);
   const [imageId, setImageId] = useState([0]);
-  // const [userData, setUserData] = useState([{}]);
   const userAttending = (attendees || []).includes(
     localStorage.getItem("username") || ""
   );
@@ -36,48 +35,24 @@ const EventCard = ({
       })
     : null;
 
-  useEffect(() => {
-    let isMounted = true;
-    // fetch data from the backend
-    fetch(`https://u-event-backend-d86136b87ee9.herokuapp.com/images/image/${username}`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (isMounted) {
-          setImageId(data);
-        }
-      })
-      .catch((error) => {
-        if (isMounted) {
-          setImageBase64(null);
-        }
-      });
-    return () => {
-      isMounted = false;
-    };
-  }, [username]);
+  // HandlerMethods
+  const handleSettingImageId = async () => {
+    const imageId = await fetchImageId(username);
+    setImageId(imageId);
+  };
 
-  // DISPLAY THE IMAGE passing the first ID -----
+  const handleSettingImageBase64 = async () => {
+    const base64String = await fetchAndSetImageBase64(imageId);
+    setImageBase64(base64String);
+  };
+
+  // FUNCTIONS
+  handleSettingImageBase64();
+
+  // USEFFECT
   useEffect(() => {
-    let isMounted = true;
-    fetch(`https://u-event-backend-d86136b87ee9.herokuapp.com/images/${imageId}`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (isMounted) {
-          // Extract the base64 image data from the JSON response
-          const base64String = data.image;
-          setImageBase64(base64String);
-          setImageId(data.id);
-        }
-      })
-      .catch((error) => {
-        if (isMounted) {
-          setImageBase64(null);
-        }
-      });
-    return () => {
-      isMounted = false;
-    };
-  }, [imageId]);
+    handleSettingImageId();
+  }, [username]);
 
   return (
     <article

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+
 import EventCard from "./EventCard";
 import "../../css/EventBoard.css";
 import "../../css/EventCard.css";
@@ -10,42 +11,18 @@ import {
   handleSearchChange,
   filterData,
 } from "../../handlers/handler";
-import { fetchEvents } from "../../handlers/api"; // Import fetchEvents from api.js
+import { fetchEvents } from "../../handlers/api";
+import { handleVerification } from "../../handlers/handler";
 
 const EventBoard = () => {
+  handleVerification();
+
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [backBtn, setBackBtn] = useState(false);
   const [data, setData] = useState([]);
   const [filter, setFilter] = useState("all");
   const [filteredData, setFilteredData] = useState([]);
   const [searchInput, setSearchInput] = useState(""); // New state for search input
-
-  // Move Handlers to Handler.js -----------------------------
-  // const handleFilterChange = (e) => {
-  //   const filter = e.target.value;
-  //   setFilter(filter);
-  // };
-
-  // const handleSearchChange = (e) => {
-  //   const searchValue = e.target.value.toLowerCase();
-  //   setSearchInput(searchValue); // Set the search input state
-
-  //   const updatedFilteredData = data.filter((event) => {
-  //     return event.eventName.toLowerCase().includes(searchValue);
-  //   });
-
-  //   setFilteredData(updatedFilteredData);
-  // };
-  // Move Handlers to Handler.js -----------------------------
-
-  // Fetch events from the backend
-  // useEffect(() => {
-  //   fetch("https://u-event-backend-d86136b87ee9.herokuapp.com/api/events")
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       setData(data);
-  //     });
-  // }, []);
 
   useEffect(() => {
     fetchEvents().then((data) => {
@@ -61,8 +38,6 @@ const EventBoard = () => {
     return data.filter((event) => event.category === filter);
   };
 
-  // Move Handlers to Handler.js -----------------------------
-
   return (
     <section className="event-board" data-testid="event-board">
       <p className="welcome-text">{`Welcome back ${
@@ -70,7 +45,7 @@ const EventBoard = () => {
           ? localStorage.getItem("firstName")
           : "User"
       }!`}</p>
-      <img src={rectImageOne} className="bg-rec-image" alt="rectimage" />
+
       <img src={feedIcon} className="feed-icon" alt="feedicon" />
       <div className="event-board-top">
         <div className="event-board-header">

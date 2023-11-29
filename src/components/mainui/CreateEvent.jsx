@@ -4,8 +4,12 @@ import "../../css/CreateEvent.css";
 import "../../css/EventCard.css";
 import EventCard from "../../components/mainui/EventCard";
 import rectImageOne from "../../assets/right-rect-1.svg";
+import { handleVerification } from "../../handlers/handler";
 
 const CreateEvent = () => {
+  // Verification
+  handleVerification();
+
   // Set the status of 200 or 400 for the notification
   const [responseStatus, setResponse] = useState("");
   const [showNotification, setShowNotification] = useState(false);

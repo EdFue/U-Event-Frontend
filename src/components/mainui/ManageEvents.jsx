@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from "react";
 import EventCardForm from "./EventCardForm.jsx";
 import "../../css/EventCardForm.css";
+import { handleVerification } from "../../handlers/handler";
 
 const ManageEvents = () => {
+  // Verification
+  handleVerification();
+
   const [events, setEvents] = useState([]);
   const [editingEventId, setEditingEventId] = useState(null);
   const [editingEventData, setEditingEventData] = useState(null);

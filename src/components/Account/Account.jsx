@@ -3,31 +3,10 @@ import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
+import { handleVerification } from "../../handlers/handler";
 
 // Global Constants
-const BASEURL = "https://u-event-backend-d86136b87ee9.herokuapp.com";
-
-// Interest Text Box Component
-const InterestTextBoxComponent = (interest) => {
-  return (
-    <>
-      <p
-        style={{
-          background: "red",
-          padding: "0.5rem 1rem",
-          margin: "0.5rem",
-        }}
-        onClick={(e) => {
-          {
-            console.log("You clicked me");
-          }
-        }}
-      >
-        {interest.interest}
-      </p>
-    </>
-  );
-};
+const BASEURL = "http://localhost:8080";
 
 // Spinner Component
 const Spinner = () => {
@@ -46,12 +25,8 @@ const Spinner = () => {
 };
 
 const Account = () => {
-  // HARDCODED DATA
-  // const [events, setEvents] = useState([
-  //   { id: 1, name: "Event 1", date: "2021-01-01" },
-  //   { id: 2, name: "Event 2", date: "2021-01-02" },
-  //   { id: 3, name: "Event 3", date: "2021-01-03" },
-  // ]);
+  // VERIFICATION
+  handleVerification();
 
   const [userEvents, setUserEvents] = useState([]);
 
@@ -153,20 +128,19 @@ const Account = () => {
       fetch(`https://u-event-backend-d86136b87ee9.herokuapp.com/images/uploadImage/${username}`, {
         method: "POST",
         body: formData,
-      })
-        .then((response) => {
-          if (response.ok) {
-            // Image uploaded successfully, you can handle the success here
-            setProfilePicture(URL.createObjectURL(file));
-          } else {
-            // Handle the error here
-          }
-        })
-        .catch((error) => {
-          console.error("Error uploading image:", error);
-        });
+      }).then((response) => {
+        if (response.ok) {
+          // Image uploaded successfully, you can handle the success here
+          setProfilePicture(URL.createObjectURL(file));
+        } else {
+          // Handle the error here
+          console.log("Error uploading image");
+        }
+      });
     }
   };
+
+  
   const handleChangeField = (e) => {
     const { name, value } = e.target;
     setUserData((prevState) => ({

@@ -60,4 +60,45 @@ export const fetchImageData = async (imageId) => {
   }
 };
 
+// API Call to fetch imageId from username
+export const fetchImageId = async (username) => {
+  try {
+    const response = await fetch(
+      `https://u-event-backend-d86136b87ee9.herokuapp.com/images/image/${username}`
+    );
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data[0];
+  } catch (error) {
+    throw error;
+  }
+};
+
+// API Call to fetch imageId and setbase64Image
+export const fetchAndSetImageBase64 = async (imageId) => {
+  try {
+    const response = await fetch(`https://u-event-backend-d86136b87ee9.herokuapp.com/images/${imageId}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+      // Check if the response contains JSON data
+      const data = await response.json();
+      return data.image || null; // Ensure a valid image is returned or null
+    } else {
+      console.error("Response is not JSON.");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching image:", error);
+    return null;
+  }
+};
 // EventDetails API Requests ---------------------------------------------------
+
+
+// handle
