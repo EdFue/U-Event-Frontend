@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import "../../css/CreateEvent.css";
 import "../../css/EventCard.css";
 import EventCard from "../../components/mainui/EventCard";
-import rectImageOne from "../../assets/right-rect-1.svg";
 import { handleVerification } from "../../handlers/handler";
 
 const CreateEvent = () => {
@@ -167,8 +166,6 @@ const CreateEvent = () => {
   return (
     <section className="create-event-component">
       <Link to="/" ref={linkRef} style={{ display: "none" }}></Link>
-
-      <img src={rectImageOne} className="bg-rec-image" alt="rect_image" />
 
       <h1 className="create-event-header">Create Event</h1>
 

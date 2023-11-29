@@ -57,7 +57,8 @@ const RegistrationOverlay2 = ({ onClose, onRegisterEmail }) => {
     const formData = new FormData();
 
     // Create an object of the form fields
-    const { firstName, lastName, username, password } = createForm;
+    const { firstName, lastName, username, password, passwordConfirm } =
+      createForm;
 
     // Update the formData object
     formData.append("firstName", firstName);
@@ -67,33 +68,45 @@ const RegistrationOverlay2 = ({ onClose, onRegisterEmail }) => {
 
     console.log(formData);
 
-    // Make a POST request to your backend endpoint
-    fetch("https://u-event-backend-d86136b87ee9.herokuapp.com/api/users", {
-      method: "POST",
-      body: JSON.stringify(createForm),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => {
-        if (response.ok) {
-          // The request was successful, you can handle the response here
-          console.log("User created successfully");
-          alert("Account Created");
-
-          // Navigate to the close the overlay
-          closeOverlay();
-        } else {
-          // The request failed, handle the error here
-          console.error("Failed to create user");
-          alert("Account NOT Created 😭");
-          // Display an error message or handle the error as needed
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        // Handle any network errors here
+    if (password !== passwordConfirm) {
+      alert("Passwords do not match");
+      // clear password fields
+      setCreateForm({
+        ...createForm,
+        password: "",
+        passwordConfirm: "",
       });
+      alert("Account NOT Created due to password mismatch😭");
+      return;
+    } else {
+      // Make a POST request to your backend endpoint
+      fetch("https://u-event-backend-d86136b87ee9.herokuapp.com/api/users", {
+        method: "POST",
+        body: JSON.stringify(createForm),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => {
+          if (response.ok) {
+            // The request was successful, you can handle the response here
+            console.log("User created successfully");
+            alert("Account Created");
+
+            // Navigate to the close the overlay
+            closeOverlay();
+          } else {
+            // The request failed, handle the error here
+            console.error("Failed to create user");
+            alert("Account NOT Created due to server problems😭");
+            // Display an error message or handle the error as needed
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          // Handle any network errors here
+        });
+    }
   };
 
   /************************************************* */
@@ -198,7 +211,6 @@ const RegistrationOverlay2 = ({ onClose, onRegisterEmail }) => {
               type="submit"
               onClick={(e) => {
                 handleSubmit(e);
-                alert("Account Created");
               }}
             >
               {" "}

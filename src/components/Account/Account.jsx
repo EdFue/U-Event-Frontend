@@ -4,6 +4,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { handleVerification } from "../../handlers/handler";
+import {
+  fetchImageByUsername,
+  fetchInterests,
+  fetchUserInterests,
+} from "../../handlers/api";
 
 // Global Constants
 const BASEURL = "https://u-event-backend-d86136b87ee9.herokuapp.com";
@@ -72,27 +77,15 @@ const Account = () => {
     navigate("/login"); // Update the path as per your routing setup
   };
 
-  const handleFetchImageFromDB = () => {
-    let isMounted = true;
-    fetch(`https://u-event-backend-d86136b87ee9.herokuapp.com/images/image/${username}`)
-      .then((res) => res.json())
-      .then((userData) => {
-        if (isMounted) {
-          console.log("Image ID Fetch: ", userData);
-
-          setUserData(userData);
-          setImageId(userData);
-        }
-      })
-      .catch((error) => {
-        if (isMounted) {
-          setImageBase64(null); // set image to null if there is an error
-        }
-      });
-    return () => {
-      isMounted = false;
+  // Get the account image from the DB (From API.js)
+  useEffect(() => {
+    const fetchData = async () => {
+      const userData = await fetchImageByUsername(username);
+      setUserData(userData);
+      setImageId(userData);
     };
-  };
+    fetchData();
+  }, [username]);
 
   const handleImageView = () => {
     setTimeout(() => {
@@ -101,9 +94,6 @@ const Account = () => {
         .then((data) => {
           const base64String = data.image;
           setImageBase64(base64String);
-        })
-        .catch((error) => {
-          setImageBase64(null);
         });
     }, 0);
   };
@@ -132,15 +122,11 @@ const Account = () => {
         if (response.ok) {
           // Image uploaded successfully, you can handle the success here
           setProfilePicture(URL.createObjectURL(file));
-        } else {
-          // Handle the error here
-          console.log("Error uploading image");
         }
       });
     }
   };
 
-  
   const handleChangeField = (e) => {
     const { name, value } = e.target;
     setUserData((prevState) => ({
@@ -178,8 +164,6 @@ const Account = () => {
     formData.append("address", address);
     formData.append("postalCode", postalCode);
     formData.append("password", password);
-
-    console.log(formData);
 
     // Make a POST request to your backend endpoint
     fetch(
@@ -236,19 +220,17 @@ const Account = () => {
       .then((res) => res.json())
       .then((data) => {
         setUserEvents(data);
-        // console.log("User Events: ", data.events.events);
       })
       .catch((error) => {
         console.log("Error Message: ", error);
       });
   };
+
   // USE EFFECTS
   useEffect(() => {
     handleGetUserEvents();
   }, []);
-  useEffect(() => {
-    handleFetchImageFromDB();
-  }, []);
+
   useEffect(() => {
     handleImageView();
   }, [imageId]);
@@ -261,41 +243,40 @@ const Account = () => {
 
   // INTERESTS
   const [userInterests, setUserInterests] = useState([]);
-  const handleGetUserInterests = async (e) => {
-    // GET the interests from the DB
-    await fetch(`${BASEURL}/api/interests/username/${username}`)
-      .then((res) => res.json())
-      .then((data) => {
+
+  const handleGetUserInterests = async () => {
+    try {
+      const data = await fetchUserInterests(username);
+      if (data) {
         setUserInterests(data);
-      })
-      .catch((error) => {
-        console.log("Error Message: ", error);
-      });
+      }
+    } catch (error) {
+      console.log("Error Message: ", error);
+    }
   };
+
+  useEffect(() => {
+    handleGetUserInterests();
+  }, [username]);
+
   const [loading, setLoading] = useState(true); // State to track loading
 
   useEffect(() => {
-    // GET the interests from the DB
-    fetch(`${BASEURL}/api/interests`)
-      .then((res) => res.json())
-      .then((data) => {
-        // setAvailInterest based on the interests the user doesn't have yet from userInterests
-        setTimeout(() => {
-          setAvailInterest(
-            data.filter(
-              (interest) =>
-                !userInterests.find(
-                  (userInterest) => userInterest.interest === interest.interest
-                )
-            )
-          );
-          setLoading(false); // Update loading state when data is fetched
-        }, 500);
-      })
-      .catch((error) => {
-        console.log("Error Message: ", error);
-        setLoading(false); // Update loading state even on error
-      });
+    const fetchData = async () => {
+      const data = await fetchInterests();
+      setTimeout(() => {
+        setAvailInterest(
+          data.filter(
+            (interest) =>
+              !userInterests.find(
+                (userInterest) => userInterest.interest === interest.interest
+              )
+          )
+        );
+        setLoading(false); // Update loading state when
+      }, 1000); // Adjust based on the time it takes to fetch data as needed.
+    };
+    fetchData();
   }, [userInterests]);
 
   useEffect(() => {
@@ -321,15 +302,11 @@ const Account = () => {
         if (response.ok) {
           console.log("Interest added successfully");
 
-          // update the user interests and avoid duplicates [Includes id and interest]
           setUserInterests([...userInterests, { id, interest }]);
 
-          // remove the interest from the available interests
           setAvailInterest(
             availInterest.filter((item) => item.interest !== interest)
           );
-        } else {
-          console.log("Failed to add interest");
         }
       })
       .catch((error) => {
@@ -350,8 +327,6 @@ const Account = () => {
     })
       .then((response) => {
         if (response.ok) {
-          console.log("Interest deleted successfully");
-
           // update the user interests and avoid duplicates [Includes id and interest]
           setUserInterests(
             userInterests.filter((item) => item.interest !== interest)
@@ -359,8 +334,6 @@ const Account = () => {
 
           // remove the interest from the available interests
           setAvailInterest([...availInterest, { id, interest }]);
-        } else {
-          console.log("Failed to delete interest");
         }
       })
       .catch((error) => {
@@ -394,8 +367,6 @@ const Account = () => {
                           data-testid="delete-icon"
                           onClick={(e) => {
                             handleDeleteImage(e);
-                            console.log("Image Deleted");
-                            console.log("Image ID: ", imageId);
                           }}
                         />
                       ) : (
@@ -408,8 +379,6 @@ const Account = () => {
                           data-testid="delete-icon"
                           onClick={(e) => {
                             handleDeleteImage(e);
-                            console.log("Image Deleted");
-                            console.log("Image ID: ", imageId);
                           }}
                         />
                       )}
@@ -446,7 +415,6 @@ const Account = () => {
                     />
                   </div>
                   <div className="user-profile-card-body-content-text">
-                    {/* {console.log("userData: ", userData)} */}
                     <div className="meta-data">
                       <h3>{`${firstName ? firstName : ""} ${
                         lastName ? lastName : ""
@@ -640,7 +608,6 @@ const Account = () => {
                             }}
                             onClick={(e) => {
                               handleSaveUserInterests(e, a_interest);
-                              console.log(userInterests);
                             }}
                             key={a_interest.id}
                           >
@@ -680,9 +647,7 @@ const Account = () => {
                                   icon={faTimes}
                                   className="interests-close-icon"
                                   onClick={(e) => {
-                                    console.log(userInterest.id);
                                     handleDeleteUserInterests(e, userInterest);
-                                    console.log(userInterests);
                                   }}
                                   key={userInterest.id}
                                 />
@@ -707,7 +672,6 @@ const Account = () => {
                   userEvents.events?.map(
                     ({ eventName, eventId, eventDate, eventTime }) => (
                       <div className="user-account-events" key={eventId}>
-                        {console.log(userEvents.events)}
                         <h3 className="account-event-name">{eventName}</h3>
                         <p className="account-event-name">
                           {new Date(eventDate).toLocaleDateString()}

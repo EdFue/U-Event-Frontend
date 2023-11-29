@@ -98,7 +98,57 @@ export const fetchAndSetImageBase64 = async (imageId) => {
     return null;
   }
 };
+
 // EventDetails API Requests ---------------------------------------------------
+export const fetchImageByUsername = async (username) => {
+  try {
+    const response = await fetch(
+      `https://u-event-backend-d86136b87ee9.herokuapp.com/images/image/${username}`
+    );
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
 
+    const userData = await response.json();
+    return userData;
+  } catch (error) {
+    console.error("Error fetching image:", error);
+    return null;
+  }
+};
 
-// handle
+export const fetchInterests = async () => {
+  try {
+    const response = await fetch(`https://u-event-backend-d86136b87ee9.herokuapp.com/api/interests`);
+    if (!response.ok) {
+      throw new Error(
+        `Error fetching interests. HTTP status: ${response.status}`
+      );
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching interests:", error.message);
+    return null;
+  }
+};
+
+// API call to fetch all the interests of a user
+export const fetchUserInterests = async (username) => {
+  try {
+    const response = await fetch(
+      `https://u-event-backend-d86136b87ee9.herokuapp.com/api/interests/username/${username}`
+    );
+    if (!response.ok) {
+      throw new Error(
+        `Error fetching user interests. HTTP status: ${response.status}`
+      );
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching user interests:", error.message);
+    return null;
+  }
+};
