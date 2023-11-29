@@ -1,25 +1,94 @@
-import React, { useState, useEffect } from "react";
 import { useRef } from "react";
-
-// Import the fontawesome icons
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
-import loginimage from "../../assets/ugur-arpaci-U18V0ToioFU-unsplash.jpg";
 import { useNavigate } from "react-router-dom";
 
+// Global Constants
+const BASEURL = "https://u-event-backend-d86136b87ee9.herokuapp.com";
+
+// Interest Text Box Component
+const InterestTextBoxComponent = (interest) => {
+  return (
+    <>
+      <p
+        style={{
+          background: "red",
+          padding: "0.5rem 1rem",
+          margin: "0.5rem",
+        }}
+        onClick={(e) => {
+          {
+            console.log("You clicked me");
+          }
+        }}
+      >
+        {interest.interest}
+      </p>
+    </>
+  );
+};
+
+// Spinner Component
+const Spinner = () => {
+  return (
+    <div
+      style={{
+        display: "inline-block",
+        borderRadius: "10px",
+        padding: "0.5rem 1rem",
+        fontWeight: "800",
+      }}
+    >
+      Updated Account Content...
+    </div>
+  );
+};
+
 const Account = () => {
-  // Initial profile picture URL
+  // HARDCODED DATA
+  // const [events, setEvents] = useState([
+  //   { id: 1, name: "Event 1", date: "2021-01-01" },
+  //   { id: 2, name: "Event 2", date: "2021-01-02" },
+  //   { id: 3, name: "Event 3", date: "2021-01-03" },
+  // ]);
+
+  const [userEvents, setUserEvents] = useState([]);
+
+  // NAVIGATE
+  const navigate = useNavigate();
+
+  // USE REFS, STATES, AND VARIABLES
+  const fileInputRef = useRef(null);
+  const [selectedInterests, setSelectedInterests] = useState([]);
+  const [editDetails, setEditDetails] = useState(false);
+  const [imageBase64, setImageBase64] = useState(null);
+  const [availInterest, setAvailInterest] = useState([]);
+  const [imageId, setImageId] = useState([0]);
+  const [file, setFile] = useState(null);
+  const [userData, setUserData] = useState([]);
+
+  // CUSTOM HOOKS
+  const [username, setUsername] = useState(
+    `${localStorage.getItem("username")}`
+  );
   const [profilePicture, setProfilePicture] = useState(
     "https://via.placeholder.com/150"
-  ); //placeholder image
-  // Handle the file input
+  );
 
-  const fileInputRef = useRef(null);
+  // Move later to commonElements.jsx
+  const {
+    firstName,
+    lastName,
+    jobDescription,
+    nickname,
+    phoneNumber,
+    address,
+    postalCode,
+    password,
+  } = userData;
 
-  const openFileInput = () => {
-    fileInputRef.current.click();
-  };
-  const navigate = useNavigate();
+  // METHOD CALLS HANDLERS
   const handleLogout = () => {
     // Clear user session or perform any other logout logic here
     localStorage.clear(); // Example: Clearing local storage
@@ -28,75 +97,54 @@ const Account = () => {
     navigate("/login"); // Update the path as per your routing setup
   };
 
-  // get username from local storage and use it to get user details from backend
-  const [imageBase64, setImageBase64] = useState(null);
-  const username = localStorage.getItem("username");
-  const [imageId, setImageId] = useState([0]);
-
-  // fetch the images associated with the current username
-  const [userData, setUserData] = useState([]);
-
-  useEffect(() => {
-    // fetch data from the backend
+  const handleFetchImageFromDB = () => {
     let isMounted = true;
     fetch(`https://u-event-backend-d86136b87ee9.herokuapp.com/images/image/${username}`)
       .then((res) => res.json())
       .then((userData) => {
         if (isMounted) {
+          console.log("Image ID Fetch: ", userData);
+
           setUserData(userData);
           setImageId(userData);
         }
       })
       .catch((error) => {
         if (isMounted) {
-          console.error("Error fetching image:", error);
           setImageBase64(null); // set image to null if there is an error
         }
       });
-    // Cleanup function
     return () => {
       isMounted = false;
     };
-  }, []);
+  };
 
-  // DISPLAY THE IMAGE passing the first ID -----
-  setTimeout(() => {
-    fetch(`https://u-event-backend-d86136b87ee9.herokuapp.com/images/${imageId[0]}`)
-      .then((res) => res.json())
-      .then((data) => {
-        // Extract the base64 image data from the JSON response
-        const base64String = data.image;
-        setImageBase64(base64String);
-
-        // console.log("Image Base64: ", base64String);
-      })
-      .catch((error) => {
-        console.error("Error fetching image:", error);
-        setImageBase64(null); // set image to null if there is an error
-      });
-  }, 100);
-
-  // DISPLAY THE IMAGE -----
-
-  useEffect(() => {
+  const handleImageView = () => {
     setTimeout(() => {
-      // fetch data from the backend
+      fetch(`https://u-event-backend-d86136b87ee9.herokuapp.com/images/${imageId[0]}`)
+        .then((res) => res.json())
+        .then((data) => {
+          const base64String = data.image;
+          setImageBase64(base64String);
+        })
+        .catch((error) => {
+          setImageBase64(null);
+        });
+    }, 0);
+  };
+  const handleFetchUserData = () => {
+    setTimeout(() => {
       fetch(`https://u-event-backend-d86136b87ee9.herokuapp.com/api/users/${username}`)
         .then((res) => res.json())
         .then((userData) => {
           setUserData(userData);
           localStorage.setItem("firstName", userData.firstName);
         });
-    }, 500);
-  }, []);
-
-  // -------
-  const [file, setFile] = useState(null);
-
+    }, 0);
+  };
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
   };
-
   const handleUpload = () => {
     if (file) {
       const formData = new FormData();
@@ -119,32 +167,16 @@ const Account = () => {
         });
     }
   };
-  // --------------------------------------------------
-
-  const {
-    firstName,
-    lastName,
-    jobDescription,
-    nickname,
-    phoneNumber,
-    address,
-    postalCode,
-    password,
-  } = userData;
-
   const handleChangeField = (e) => {
     const { name, value } = e.target;
-    // Assuming you are using React's useState hooks
-    // Update the state for the respective input field
     setUserData((prevState) => ({
       ...prevState,
       [name]: value,
     }));
   };
-
-  //handle the submit button on the details card
   const handleSubmit = (e) => {
     e.preventDefault();
+
     // Create a FormData object
     const formData = new FormData();
 
@@ -188,74 +220,179 @@ const Account = () => {
     )
       .then((response) => {
         if (response.ok) {
-          // The request was successful, you can handle the response here
-          console.log("User Details updated successfully");
           alert("Account Created");
-          // Reset the form or navigate to a different page
         } else {
           // The request failed, handle the error here
           console.error("Failed to update user details");
           alert("User Details Not Updated 😭");
-          // Display an error message or handle the error as needed
         }
       })
       .catch((error) => {
         console.error("Error:", error);
-        // Handle any network errors here
       });
-    console.log("Updated user details:" + userData);
   };
-
-  // Handle the delete image button
+  const fetchDataFromBackend = async () => {
+    try {
+      const response = await fetch(
+        `${BASEURL}/api/interests/username/${username}`
+      );
+      const data = await response.json();
+      // fetch the interests from the backend and show only that are not already selected.
+      const fetchedInterests = data.map((item) => item.interest);
+      setSelectedInterests(fetchedInterests);
+    } catch (error) {
+      console.error("Error fetching data from backend:", error);
+    }
+  };
   const handleDeleteImage = () => {
     fetch(`https://u-event-backend-d86136b87ee9.herokuapp.com/images/deleteImage/${imageId}`, {
       method: "DELETE",
     })
       .then((response) => {
-        if (response.ok) {
-          // Image deleted successfully - remove the image from the state
-          setImageBase64(null);
-        } else {
-          // Handle the error
-        }
+        response.ok ? setImageBase64(null) : console.log("Image Deleted");
       })
       .catch((error) => {
         console.error("Error removing image:", error);
       });
   };
 
-  /** Interests Card */
+  const handleGetUserEvents = async (e) => {
+    // GET the events from the DB
+    await fetch(`${BASEURL}/api/users/${username}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setUserEvents(data);
+        // console.log("User Events: ", data.events.events);
+      })
+      .catch((error) => {
+        console.log("Error Message: ", error);
+      });
+  };
+  // USE EFFECTS
+  useEffect(() => {
+    handleGetUserEvents();
+  }, []);
+  useEffect(() => {
+    handleFetchImageFromDB();
+  }, []);
+  useEffect(() => {
+    handleImageView();
+  }, [imageId]);
+  useEffect(() => {
+    handleFetchUserData();
+  }, []);
+  useEffect(() => {
+    fetchDataFromBackend();
+  }, []);
 
-  const [selectedInterests, setSelectedInterests] = useState([]);
-  const interests = [
-    "Archery",
-    "Dancing",
-    "Cooking",
-    "Sports",
-    "Hiking",
-    "Painting",
-    "Rock-Climbing",
-  ]; // Example interests
+  // INTERESTS
+  const [userInterests, setUserInterests] = useState([]);
+  const handleGetUserInterests = async (e) => {
+    // GET the interests from the DB
+    await fetch(`${BASEURL}/api/interests/username/${username}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setUserInterests(data);
+      })
+      .catch((error) => {
+        console.log("Error Message: ", error);
+      });
+  };
+  const [loading, setLoading] = useState(true); // State to track loading
 
-  const [editDetails, setEditDetails] = useState(false);
+  useEffect(() => {
+    // GET the interests from the DB
+    fetch(`${BASEURL}/api/interests`)
+      .then((res) => res.json())
+      .then((data) => {
+        // setAvailInterest based on the interests the user doesn't have yet from userInterests
+        setTimeout(() => {
+          setAvailInterest(
+            data.filter(
+              (interest) =>
+                !userInterests.find(
+                  (userInterest) => userInterest.interest === interest.interest
+                )
+            )
+          );
+          setLoading(false); // Update loading state when data is fetched
+        }, 500);
+      })
+      .catch((error) => {
+        console.log("Error Message: ", error);
+        setLoading(false); // Update loading state even on error
+      });
+  }, [userInterests]);
 
-  const toggleInterest = (interest) => {
-    if (selectedInterests.includes(interest)) {
-      setSelectedInterests(
-        selectedInterests.filter((item) => item !== interest)
-      );
-    } else {
-      setSelectedInterests([...selectedInterests, interest]);
-    }
+  useEffect(() => {
+    handleGetUserInterests();
+  }, []);
+
+  const handleSaveUserInterests = async (e, a_interest) => {
+    console.log("ADDED: ", a_interest);
+
+    let interest = a_interest.interest;
+    let id = a_interest.id;
+
+    e.preventDefault();
+    // POST the interests to the DB
+    await fetch(`${BASEURL}/api/users/${username}/interests/${interest}`, {
+      method: "POST",
+      body: JSON.stringify(interest),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          console.log("Interest added successfully");
+
+          // update the user interests and avoid duplicates [Includes id and interest]
+          setUserInterests([...userInterests, { id, interest }]);
+
+          // remove the interest from the available interests
+          setAvailInterest(
+            availInterest.filter((item) => item.interest !== interest)
+          );
+        } else {
+          console.log("Failed to add interest");
+        }
+      })
+      .catch((error) => {
+        console.log("Error:", error);
+      });
   };
 
-  /** Events Card */
+  const handleDeleteUserInterests = async (e, user_interests) => {
+    console.log("DELETED: ", user_interests);
 
-  const [events, setEvents] = useState([
-    { id: 1, name: "Event 1", date: "2021-01-01" },
-    { id: 2, name: "Event 2", date: "2021-01-02" },
-    { id: 3, name: "Event 3", date: "2021-01-03" },
-  ]);
+    let interest = user_interests.interest;
+    let id = user_interests.id;
+
+    e.preventDefault();
+    // DELETE the interests from the DB
+    await fetch(`${BASEURL}/api/users/${username}/interests/${id}`, {
+      method: "DELETE",
+    })
+      .then((response) => {
+        if (response.ok) {
+          console.log("Interest deleted successfully");
+
+          // update the user interests and avoid duplicates [Includes id and interest]
+          setUserInterests(
+            userInterests.filter((item) => item.interest !== interest)
+          );
+
+          // remove the interest from the available interests
+          setAvailInterest([...availInterest, { id, interest }]);
+        } else {
+          console.log("Failed to delete interest");
+        }
+      })
+      .catch((error) => {
+        console.log("Error:", error);
+      });
+  };
 
   return (
     <div className="accounts-page">
@@ -280,6 +417,7 @@ const Account = () => {
                         <FontAwesomeIcon
                           icon={faTimes}
                           className="close-icon"
+                          data-testid="delete-icon"
                           onClick={(e) => {
                             handleDeleteImage(e);
                             console.log("Image Deleted");
@@ -293,6 +431,7 @@ const Account = () => {
                           }}
                           icon={faTimes}
                           className="close-icon"
+                          data-testid="delete-icon"
                           onClick={(e) => {
                             handleDeleteImage(e);
                             console.log("Image Deleted");
@@ -333,7 +472,7 @@ const Account = () => {
                     />
                   </div>
                   <div className="user-profile-card-body-content-text">
-                    {console.log("userData: ", userData)}
+                    {/* {console.log("userData: ", userData)} */}
                     <div className="meta-data">
                       <h3>{`${firstName ? firstName : ""} ${
                         lastName ? lastName : ""
@@ -493,37 +632,118 @@ const Account = () => {
               </div>
             </div>
           </div>
-          {/* USER CONTAINER */}
 
-          {/* <UserInterestsCard/> */}
-
+          {/* ✅ */}
           <div className="user-profile-lower-container">
             <div className="interests-card">
-              <h2>Interests</h2>
-              <div className="interests-selection-box">
-                {interests.map((interest) => (
-                  <div className="interest-wrapper" key={interest}>
-                    <input
-                      type="checkbox"
-                      checked={selectedInterests.includes(interest)}
-                      onChange={() => toggleInterest(interest)}
-                    />
-                    <span>{interest}</span>
+              {/* Added Custom Spinner [Not Implemented Yet 11-23-23] */}
+              {loading ? (
+                <Spinner />
+              ) : (
+                <div className="interests-wrap">
+                  <h2 className="user-interest-text">Avail from DB</h2>
+                  <div>
+                    <div className="interest-wrapper">
+                      <div
+                        className="interest-text-block"
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          flexDirection: "row",
+                          width: "70%",
+                          flexWrap: "wrap",
+                          justifyContent: "center",
+                          margin: "0 auto",
+                        }}
+                      >
+                        {/* Interests Text El's */}
+                        {availInterest.map((a_interest) => (
+                          <p
+                            className="avail-interest-text"
+                            style={{
+                              padding: "0.5rem 1rem",
+                              margin: "0.5rem",
+                            }}
+                            onClick={(e) => {
+                              handleSaveUserInterests(e, a_interest);
+                              console.log(userInterests);
+                            }}
+                            key={a_interest.id}
+                          >
+                            {a_interest.interest}
+                          </p>
+                        ))}
+                        {/* Interests Text El's */}
+                      </div>
+                      <hr />
+                      <div interests-container-bubble>
+                        {/* Dynamic Interest Here */}
+                        <h2 className="user-interest-text">Your Interests</h2>
+                        <div
+                          className="interest-text-block"
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            flexDirection: "row",
+                            width: "70%",
+                            flexWrap: "wrap",
+                            justifyContent: "center",
+                            margin: "0 auto",
+                          }}
+                        >
+                          {userInterests.map((userInterest) => (
+                            <div key={userInterest.id}>
+                              <p
+                                style={{
+                                  padding: "0.5rem 1rem",
+                                  margin: "0.5rem",
+                                  position: "relative",
+                                }}
+                                className="interest-text"
+                                key={userInterest.id}
+                              >
+                                <FontAwesomeIcon
+                                  icon={faTimes}
+                                  className="interests-close-icon"
+                                  onClick={(e) => {
+                                    console.log(userInterest.id);
+                                    handleDeleteUserInterests(e, userInterest);
+                                    console.log(userInterests);
+                                  }}
+                                  key={userInterest.id}
+                                />
+                                {userInterest.interest}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                        {/* Dynamic Interest Here */}
+                      </div>
+                    </div>
                   </div>
-                ))}
-              </div>
+                </div>
+              )}
             </div>
-
             {/* <UserEventsCard/> */}
-
             <div className="events-card">
               <h2>Events</h2>
               <div className="events-signup-listing">
-                {events.map((event) => (
-                  <p key={event.id}>
-                    {event.name} - {event.date}
-                  </p>
-                ))}
+                {
+                  // iterate over the array of events and display them. ? is used to check if the events array is empty or not.
+                  userEvents.events?.map(
+                    ({ eventName, eventId, eventDate, eventTime }) => (
+                      <div className="user-account-events" key={eventId}>
+                        {console.log(userEvents.events)}
+                        <h3 className="account-event-name">{eventName}</h3>
+                        <p className="account-event-name">
+                          {new Date(eventDate).toLocaleDateString()}
+                        </p>
+                        <p className="account-event-name">{eventTime}</p>
+                        <p className="registered-tag">Registered</p>
+                      </div>
+                    )
+                  )
+                }
               </div>
             </div>
           </div>

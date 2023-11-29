@@ -147,7 +147,8 @@ const EventDetails = () => {
   };
 
   return (
-    <section className="event-detail">
+    <section className="event-detail"
+    data-testid = "event-detail">
       <div className="event-card-container">
         {/* EVENT CARD */}
         <article

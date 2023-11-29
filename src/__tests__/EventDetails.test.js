@@ -1,61 +1,82 @@
 import React from "react";
+import { render, fireEvent, waitFor } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
+import sinon from "sinon";
 import { expect } from "chai";
-import { render, act } from "@testing-library/react";
 import EventDetails from "../components/mainui/EventDetails";
-import { waitFor } from "@testing-library/react";
-
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
-  useLocation: () => ({
-    state: {
-      event: {
-        eventId: "1",
-        attendees: ["user1", "user2"],
-        eventName: "Summer Fest",
-        user: {
-          username: "johndoe",
-          firstName: "John",
-          lastName: "Doe",
-        },
-        eventDate: "2023-01-01T10:00:00Z",
-        location: "Central Park",
-        description: "This is a test event.",
-        image: "https://example.com/event-image.jpg",
-        tags: ["music", "summer", "outdoor"],
-      },
-    },
-  }),
-}));
 
 describe("<EventDetails />", () => {
-  it("renders the event date correctly", async () => {
-    await act(async () => {
-      const { container } = render(<EventDetails />);
+  // ... Setup for stubs ...
+  let fetchStub;
 
-      // Wait for the expected element to appear
-      await waitFor(() => {
-        const expectedDate = new Date(
-          "2023-01-01T10:00:00Z"
-        ).toLocaleDateString("en-US", {
-          weekday: "long",
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        });
-        const expectedTime = new Date(
-          "2023-01-01T10:00:00Z"
-        ).toLocaleTimeString("en-US", {
-          hour: "numeric",
-          minute: "numeric",
-          hour12: true,
-        });
+  const mockEvent = {
+    eventId: "123",
+    eventName: "Mock Event",
+    user: {
+      username: "mockUser",
+      firstName: "John",
+      lastName: "Doe",
+    },
+    eventDate: "2023-07-20T18:00:00Z", // Example date in ISO format
+    location: "Mock Location",
+    description: "This is a mock event description.",
+    image: "https://example.com/mock-image.jpg",
+    tags: ["tag1", "tag2", "tag3"],
+    attendees: ["user1", "user2", "user3"],
+  };
+  
+  beforeEach(() => {
+    fetchStub = sinon.stub(window, 'fetch');
+  });
 
-        expect(container.textContent).to.include(
-          `Meeting Time:${expectedDate}`
-        );
-        expect(container.textContent).to.include(expectedTime);
-      });
-      // Additional tests...
+  afterEach(() => {
+    sinon.restore();
+  });
+
+  it("renders without crashing", () => {
+    const { getAllByText, getByTestId } = render(
+      <MemoryRouter initialEntries={[{ state: { event: mockEvent } }]}>
+        <EventDetails />
+      </MemoryRouter>
+    );
+    const allInstances = getAllByText("Mock Event");
+    const eventDetails = getByTestId("event-detail");
+    expect(eventDetails).to.exist;
+    expect(allInstances.length).to.be.greaterThan(0);
+  });
+  
+
+  it("formats date correctly", async () => {
+    const { getByText } = render(
+      <MemoryRouter initialEntries={[{ state: { event: mockEvent } }]}>
+        <EventDetails />
+      </MemoryRouter>
+    );
+  
+    const dateRegex = /Thursday, July 20, 2023[\s\S]*12:00 PM/;
+    
+    await waitFor(() => {
+      expect(getByText(dateRegex)).to.be.ok;
     });
   });
+
+  it("handles join event correctly", async () => {
+    const response = new Response(JSON.stringify({}), { status: 200 });
+    fetchStub.resolves(response);
+
+    const { getByText } = render(
+      <MemoryRouter initialEntries={[{ state: { event: mockEvent } }]}>
+        <EventDetails />
+      </MemoryRouter>
+    );
+
+    const joinButton = getByText("Join");
+    fireEvent.click(joinButton);
+
+    // Since the state update could be asynchronous, wait for the button text to change
+    await waitFor(() => {
+      expect(getByText("Joined")).to.be.ok;
+    });
+  });
+  
 });

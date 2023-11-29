@@ -15,6 +15,10 @@ const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  // For the token
+  const [token, setToken] = useState("");
+  // For the token
+
   const linkRef = useRef();
 
   const [createForm, setCreateForm] = useState({
@@ -95,10 +99,25 @@ const Login = () => {
         if (response.ok) {
           // The request was successful, you can handle the response here
           console.log("Logged In successfully");
+          // ******** GET JWT TOKEN ********
+          fetch(
+            `https://u-event-backend-d86136b87ee9.herokuapp.com/api/users/${localStorage.getItem(
+              "username"
+            )}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          ).then((tokenData) => {
+            console.log("Token Data: ", tokenData);
+            localStorage.setItem("token", tokenData);
+          });
+          // ******** GET JWT TOKEN ********
+
           // Reset the form or navigate to a different page
           linkRef.current.click();
-          // Show the JWT token in the console
-          console.log("JWT: ", response.headers.get("Authorization"));
         } else {
           // The request failed, handle the error here
           console.error("Failed to log user in");
