@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { handleVerification } from "../../handlers/handler";
 
 // Global Constants
-const BASEURL = "http://localhost:8080";
+const BASEURL = "https://u-event-frontend-20ddc44bb59c.herokuapp.com";
 
 // Spinner Component
 const Spinner = () => {
