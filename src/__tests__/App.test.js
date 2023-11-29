@@ -3,7 +3,9 @@ import { render, screen } from "@testing-library/react";
 import App from "../App";
 
 // Mock child components
-jest.mock("../components/mainui/MainUI", () => () => <section>MainUI</section>);
+jest.mock("../components/mainui/Eventboard", () => () => (
+  <section>EventBoard</section>
+));
 jest.mock("../components/sidebar/Sidebar", () => () => <div>Sidebar</div>);
 jest.mock("../components/Account/Account", () => () => <div>Account</div>);
 jest.mock("../components/mainui/EventDetails", () => () => (

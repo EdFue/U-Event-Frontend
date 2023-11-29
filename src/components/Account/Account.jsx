@@ -77,16 +77,6 @@ const Account = () => {
     navigate("/login"); // Update the path as per your routing setup
   };
 
-  // Get the account image from the DB (From API.js)
-  useEffect(() => {
-    const fetchData = async () => {
-      const userData = await fetchImageByUsername(username);
-      setUserData(userData);
-      setImageId(userData);
-    };
-    fetchData();
-  }, [username]);
-
   const handleImageView = () => {
     setTimeout(() => {
       fetch(`https://u-event-backend-d86136b87ee9.herokuapp.com/images/${imageId[0]}`)
@@ -94,6 +84,9 @@ const Account = () => {
         .then((data) => {
           const base64String = data.image;
           setImageBase64(base64String);
+        })
+        .catch((error) => {
+          console.log("Error Message: ", error);
         });
     }, 0);
   };
@@ -103,10 +96,34 @@ const Account = () => {
         .then((res) => res.json())
         .then((userData) => {
           setUserData(userData);
+          console.log(userData);
           localStorage.setItem("firstName", userData.firstName);
         });
     }, 0);
   };
+
+  // Get the account image from the DB (From API.js)
+  const fetchData = async () => {
+    try {
+      const userData = await fetchImageByUsername(username);
+      console.log("User Data: ", userData);
+
+      if (userData) {
+        setImageId(userData);
+      } else {
+        // If userData is null or undefined, set a default image or handle it as needed
+        setImageId(0); // Set a default image ID or handle it as you see fit
+      }
+    } catch (error) {
+      // Handle any errors that occur during the fetch
+      console.error("Error fetching user data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [username]);
+
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
   };
@@ -617,7 +634,7 @@ const Account = () => {
                         {/* Interests Text El's */}
                       </div>
                       <hr />
-                      <div interests-container-bubble>
+                      <div className="interests-container-bubble">
                         {/* Dynamic Interest Here */}
                         <h2 className="user-interest-text">Your Interests</h2>
                         <div

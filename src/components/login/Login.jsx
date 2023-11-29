@@ -26,10 +26,8 @@ const Login = () => {
     lastName: "",
     username: "",
     password: "",
-    passwordConfirm: "",
   });
 
-  // UPDATE FORM CONTENT FOR GET REQUEST
   const handleChange = (e) => {
     setCreateForm({
       ...createForm,

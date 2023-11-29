@@ -54,6 +54,7 @@ const EventBoard = () => {
             <p className="filter-text">Filter By</p>
             <select
               className="event-board-filter"
+              data-testid="event-board-filter"
               onChange={(e) => handleFilterChange(e, setFilter)}
             >
               <option value="all">All</option>
@@ -68,6 +69,7 @@ const EventBoard = () => {
           <div className="search-container">
             <input
               className="search-bar"
+              data-testid="search-bar"
               type="text"
               placeholder="Search for an event..."
               onChange={(e) =>

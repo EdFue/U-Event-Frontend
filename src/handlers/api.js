@@ -70,9 +70,15 @@ export const fetchImageId = async (username) => {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const data = await response.json();
+
+    if (!data || !data[0]) {
+      throw new Error("Image ID not found in the response.");
+    }
+
     return data[0];
   } catch (error) {
-    throw error;
+    console.error("Error fetching image:", error);
+    return null;
   }
 };
 
@@ -88,10 +94,15 @@ export const fetchAndSetImageBase64 = async (imageId) => {
     if (contentType && contentType.includes("application/json")) {
       // Check if the response contains JSON data
       const data = await response.json();
-      return data.image || null; // Ensure a valid image is returned or null
+      if (data.image) {
+        return data.image;
+      } else {
+        console.error("Image data is missing in the response.");
+        return null;
+      }
     } else {
-      console.error("Response is not JSON.");
-      return null;
+      // If the response is not JSON, assume it's a base64 image string
+      return await response.text();
     }
   } catch (error) {
     console.error("Error fetching image:", error);

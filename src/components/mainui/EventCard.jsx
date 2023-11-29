@@ -35,11 +35,11 @@ const EventCard = ({
       })
     : null;
 
-  // HandlerMethods
-  const handleSettingImageId = async () => {
-    const imageId = await fetchImageId(username);
-    setImageId(imageId);
-  };
+  // // HandlerMethods
+  // const handleSettingImageId = async () => {
+  //   const imageId = await fetchImageId(username);
+  //   setImageId(imageId);
+  // };
 
   const handleSettingImageBase64 = async () => {
     const base64String = await fetchAndSetImageBase64(imageId);
@@ -49,10 +49,10 @@ const EventCard = ({
   // FUNCTIONS
   handleSettingImageBase64();
 
-  // USEFFECT
-  useEffect(() => {
-    handleSettingImageId();
-  }, [username]);
+  // // USEFFECT
+  // useEffect(() => {
+  //   handleSettingImageId();
+  // }, [username]);
 
   return (
     <article
