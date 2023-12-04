@@ -10,9 +10,11 @@ const ManageEvents = () => {
   const [events, setEvents] = useState([]);
   const [editingEventId, setEditingEventId] = useState(null);
   const [editingEventData, setEditingEventData] = useState(null);
+  const username = localStorage.getItem("username");
 
+  // updated 12-3-23 - Shows only events created by the user logged in in manage events section
   useEffect(() => {
-    fetch("https://u-event-backend-d86136b87ee9.herokuapp.com/api/events")
+    fetch("https://u-event-backend-d86136b87ee9.herokuapp.com/api/events/")
       .then((res) => {
         if (!res.ok) {
           throw new Error("Failed to fetch events.");
@@ -20,6 +22,10 @@ const ManageEvents = () => {
         return res.json();
       })
       .then((data) => {
+        console.log(data);
+        // filter events by user and show only events created by the user logged in
+        data = data.filter((event) => event.user.username === username);
+
         setEvents(data);
       })
       .catch((error) => {
@@ -117,7 +123,11 @@ const ManageEvents = () => {
                 />
               ) : (
                 <>
-                  <EventCardForm {...event} width={400} />
+                  <EventCardForm
+                    {...event}
+                    width={400}
+                    username={event.user.username}
+                  />
                   <button onClick={() => deleteEvent(event.eventId)}>
                     Delete
                   </button>

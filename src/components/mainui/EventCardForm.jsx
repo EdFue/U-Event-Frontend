@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { AvatarImage } from "../commonElements";
+import {
+  fetchImageId,
+  fetchAndSetImageBase64,
+  fetchImageByUsername,
+} from "../../handlers/api";
 
 const EventCardForm = ({
   isEdit,
@@ -21,6 +26,8 @@ const EventCardForm = ({
   user: { firstName, lastName },
   tags,
   backgroundImage,
+  attendees,
+  username,
 }) => {
   const [formData, setFormData] = useState({
     width,
@@ -39,6 +46,8 @@ const EventCardForm = ({
     lastName,
     tags,
     backgroundImage,
+    attendees,
+    username,
   });
 
   useEffect(() => {
@@ -60,6 +69,8 @@ const EventCardForm = ({
         lastName,
         tags,
         backgroundImage,
+        attendees,
+        username,
       });
     }
   }, [
@@ -80,7 +91,30 @@ const EventCardForm = ({
     lastName,
     tags,
     backgroundImage,
+    attendees,
+    username,
   ]);
+
+  const [imageBase64, setImageBase64] = useState(null);
+  const [imageId, setImageId] = useState([]);
+
+  useEffect(() => {
+    const fetchAndSetImage = async () => {
+      try {
+        const data = await fetchImageByUsername(username);
+        setImageId(data);
+
+        if (data) {
+          const base64String = await fetchAndSetImageBase64(data);
+          setImageBase64(base64String);
+        }
+      } catch (error) {
+        console.error("Error fetching image:", error);
+      }
+    };
+
+    fetchAndSetImage();
+  }, [username]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -106,6 +140,7 @@ const EventCardForm = ({
 
   return (
     <form onSubmit={handleSubmit} className="manage-event-card-form">
+      {console.log(formData)}
       <article
         className="manage-event-card"
         style={{
@@ -120,12 +155,29 @@ const EventCardForm = ({
           backgroundSize: "cover",
         }}
       >
-        <img
-          src={AvatarImage}
-          alt="avatarImage"
-          className="manage-event-avatar"
-        />
-        <p className="manage-match-tag">Match</p>
+        {imageBase64 ? (
+          <img
+            className="manage-event-avatar"
+            src={`data:image/jpeg;base64,${imageBase64}`}
+            width={100}
+            height={100}
+            alt="image_alt"
+            style={{
+              objectFit: "cover",
+            }}
+          />
+        ) : (
+          <img
+            className="manage-event-avatar"
+            src={AvatarImage}
+            width={100}
+            height={100}
+            alt="image_alt"
+            style={{
+              objectFit: "cover",
+            }}
+          />
+        )}
         <div
           className="manage-card-content"
           style={{
@@ -134,154 +186,113 @@ const EventCardForm = ({
             color: `${isEdit ? "#000" : "#fff"}`,
           }}
         >
-          <label>
-            Event Name:
+          <p className="manage-match-tag">Match</p>
+          <div className="input-block">
             <input
               type="text"
               name="eventName"
               value={formData.eventName}
               onChange={handleChange}
-              className="manage-card-title manage-input"
-              style={{
-                background: `${isEdit ? "#fff" : "transparent"}`,
-                color: `${isEdit ? "#000" : "#fff"}`,
-              }}
+              className={`manage-card-title manage-input ${
+                isEdit ? "shift" : ""
+              }`}
               readOnly={isEdit ? false : true}
             />
-          </label>
-          <label>
-            Host First Name:
-            <input
-              type="text"
-              name="firstName"
-              value={formData.firstName}
-              onChange={handleChange}
-              className="manage-card-firstname manage-input"
-              style={{
-                background: `${isEdit ? "#fff" : "transparent"}`,
-                color: `${isEdit ? "#000" : "#fff"}`,
-              }}
-              readOnly={isEdit ? false : true}
-            />
-          </label>
-          <label>
-            Host Last Name:
-            <input
-              type="text"
-              name="lastName"
-              value={formData.lastName}
-              onChange={handleChange}
-              className="manage-card-lastname manage-input"
-              style={{
-                background: `${isEdit ? "#fff" : "transparent"}`,
-                color: `${isEdit ? "#000" : "#fff"}`,
-              }}
-              readOnly={isEdit ? false : true}
-            />
-          </label>
-          <label>
-            Category:
+          </div>
+          <div className="input-block">
+            <p className="manage-attending-tag-event-card match-tag">
+              Attending ({attendees ? attendees.length : ""})
+            </p>
+          </div>
+          <div className="input-block">
+            <div className="input-block-host-meta">
+              <label>Host:</label>
+              <div className="name-block">
+                <p
+                  type="text"
+                  name="firstName"
+                  className={`manage-card-firstname manage-input  ${
+                    isEdit ? "" : ""
+                  }`}
+                >
+                  {formData.firstName}
+                </p>
+                <p
+                  type="text"
+                  name="lastName"
+                  className={`manage-card-lastname manage-input  ${
+                    isEdit ? "" : ""
+                  }`}
+                >
+                  {formData.lastName}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="input-block">
+            <label className={` ${isEdit ? "marginreset" : ""}`}>
+              Category:
+            </label>
             <input
               type="text"
               name="category"
               value={formData.category}
               onChange={handleChange}
-              className="manage-card-category manage-input"
-              style={{
-                background: `${isEdit ? "#fff" : "transparent"}`,
-                color: `${isEdit ? "#000" : "#fff"}`,
-              }}
+              className={`manage-card-category manage-input  ${
+                isEdit ? "shift" : ""
+              }`}
               readOnly={isEdit ? false : true}
             />
-          </label>
-          <label>
-            Date:
-            <input
-              type="date"
-              name="eventDate"
-              value={formData.eventDate}
-              onChange={handleChange}
-              className="manage-card-date manage-input"
-              style={{
-                background: `${isEdit ? "#fff" : "transparent"}`,
-                color: `${isEdit ? "#000" : "#fff"}`,
-              }}
-              readOnly={isEdit ? false : true}
-            />
-          </label>
-          <label>
-            Time:
-            <input
-              type="time"
-              name="eventTime"
-              value={formData.eventTime}
-              onChange={handleChange}
-              className="manage-card-event-time manage-input"
-              style={{
-                background: `${isEdit ? "#fff" : "transparent"}`,
-                color: `${isEdit ? "#000" : "#fff"}`,
-              }}
-              readOnly={isEdit ? false : true}
-            />
-          </label>
-          <label>
-            Location:
-            <input
-              type="text"
-              name="location"
-              value={formData.location}
-              onChange={handleChange}
-              className="manage-card-location manage-input"
-              style={{
-                background: `${isEdit ? "#fff" : "transparent"}`,
-                color: `${isEdit ? "#000" : "#fff"}`,
-              }}
-              readOnly={isEdit ? false : true}
-            />
-          </label>
-          <label>
-            City:
-            <input
-              type="text"
-              name="city"
-              value={formData.city}
-              onChange={handleChange}
-              className="manage-card-city manage-input"
-              style={{
-                background: `${isEdit ? "#fff" : "transparent"}`,
-                color: `${isEdit ? "#000" : "#fff"}`,
-              }}
-              readOnly={isEdit ? false : true}
-            />
-          </label>
-          <label>
-            Postal Code:
-            <input
-              type="text"
-              name="postalCode"
-              value={formData.postalCode}
-              onChange={handleChange}
-              className="manage-card-postalcode manage-input"
-              style={{
-                background: `${isEdit ? "#fff" : "transparent"}`,
-                color: `${isEdit ? "#000" : "#fff"}`,
-              }}
-              readOnly={isEdit ? false : true}
-            />
-          </label>
-          <label>
-            Description:
+          </div>
+          <div className="input-block">
+            <div className="date-block-meta">
+              <label className={` ${isEdit ? "marginreset" : ""}`}>Date:</label>
+              <input
+                type="date"
+                name="eventDate"
+                value={formData.eventDate}
+                onChange={handleChange}
+                className={`manage-card-date manage-input  ${
+                  isEdit ? "shift" : ""
+                }`}
+                readOnly={isEdit ? false : true}
+              />
+              <input
+                type="time"
+                name="eventTime"
+                value={formData.eventTime}
+                onChange={handleChange}
+                className={`manage-card-event-time manage-input  ${
+                  isEdit ? "shift" : ""
+                }`}
+                readOnly={isEdit ? false : true}
+              />
+            </div>
+          </div>
+          <div className="input-block location-meta">
+            <label className="location-label">Location:</label>
+            <div className="location-details">
+              <p>{`${location ? location + ", " : ""}${city} ${postalCode}`}</p>
+            </div>
+          </div>
+          <div className="input-block manage-event-details-block">
+            <label
+              className={`manage-event-details-header ${
+                isEdit ? "marginreset" : ""
+              }`}
+            >
+              Event Details:
+            </label>
             <textarea
               name="description"
               value={formData.description}
               onChange={handleChange}
-              className="manage-event-details-text manage-input"
-              style={{
-                background: `${isEdit ? "#fff" : "transparent"}`,
-              }}
+              className={`manage-event-details-text manage-input  ${
+                isEdit ? "shift" : ""
+              }`}
               readOnly={isEdit ? false : true}
             />
-          </label>
+          </div>
           <button type="submit">Update Event</button>
         </div>
       </article>

@@ -467,7 +467,7 @@ const Account = () => {
                 </div>
                 <div className="user-details-card-body-content">
                   <button
-                    className="edit-user-details-button"
+                    className={`edit-user-details-button`}
                     onClick={
                       editDetails
                         ? () => setEditDetails(false)
@@ -486,6 +486,7 @@ const Account = () => {
                         {/* Updated First and Last name fields to update localstorage */}
                         <input
                           type="text"
+                          className={`${editDetails ? "shadow-true" : ""}`}
                           id="firstName"
                           name="firstName"
                           value={firstName}
@@ -497,6 +498,7 @@ const Account = () => {
                         <label htmlFor="lastName">Last Name</label>
                         <input
                           type="text"
+                          className={`${editDetails ? "shadow-true" : ""}`}
                           id="lastName"
                           name="lastName"
                           value={lastName}
@@ -508,6 +510,7 @@ const Account = () => {
                         <label htmlFor="jobDescription">Job Description</label>
                         <input
                           type="text"
+                          className={`${editDetails ? "shadow-true" : ""}`}
                           id="jobDescription"
                           name="jobDescription"
                           value={jobDescription}
@@ -516,6 +519,7 @@ const Account = () => {
                         <label htmlFor="nickname">Nickname</label>
                         <input
                           type="text"
+                          className={`${editDetails ? "shadow-true" : ""}`}
                           id="nickname"
                           name="nickname"
                           value={nickname}
@@ -524,6 +528,7 @@ const Account = () => {
                         <label htmlFor="email">Email</label>
                         <input
                           type="email"
+                          className={`${editDetails ? "shadow-true" : ""}`}
                           id="email"
                           name="username"
                           value={username}
@@ -532,6 +537,7 @@ const Account = () => {
                         <label htmlFor="phone">Phone</label>
                         <input
                           type="tel"
+                          className={`${editDetails ? "shadow-true" : ""}`}
                           id="phone"
                           name="phoneNumber"
                           value={phoneNumber}
@@ -540,6 +546,7 @@ const Account = () => {
                         <label htmlFor="address">Address</label>
                         <input
                           type="text"
+                          className={`${editDetails ? "shadow-true" : ""}`}
                           id="address"
                           name="address"
                           value={address}
@@ -548,6 +555,7 @@ const Account = () => {
                         <label htmlFor="postalCode">Postal Code</label>
                         <input
                           type="text"
+                          className={`${editDetails ? "shadow-true" : ""}`}
                           id="postalCode"
                           name="postalCode"
                           value={postalCode}
@@ -556,6 +564,7 @@ const Account = () => {
                         <label htmlFor="password">Password</label>
                         <input
                           type="password"
+                          className={`${editDetails ? "shadow-true" : ""}`}
                           id="password"
                           name="password"
                           value={password}
@@ -566,6 +575,7 @@ const Account = () => {
                         </label>
                         <input
                           type="password"
+                          className={`${editDetails ? "shadow-true" : ""}`}
                           id="confirmPassword"
                           name="confirmPassword"
                           value={password}

@@ -37,7 +37,7 @@
   transition: var(--base-transition); /* Smooth expand/collapse animation */
 }
 .user-profile-container.edit {
-  height: 875px;
+  height: 1080px;
   transition: var(--base-transition); /* Smooth expand/collapse animation */
 }
 
@@ -96,7 +96,8 @@
   align-items: center;
   gap: 2rem;
   padding: 2rem;
-  height: 500px;
+  height: 100%;
+  min-height: 500px;
 }
 /* User Details Card styles */
 .user-details-card {
@@ -110,6 +111,7 @@
   transition: var(--base-transition); /* Smooth expand/collapse animation */
   overflow: hidden;
 }
+
 .accounts-form-container {
   width: 100%;
 }
@@ -136,6 +138,27 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.8rem;
+
+  width: 70%;
+  margin: 1rem auto;
+}
+.user-details-card-body-content-text input {
+  border-radius: 50px;
+  margin-top: 1rem;
+  border: none;
+  background: rgba(201, 201, 201, 0.2);
+  padding: 10px 20px;
+  width: 100%;
+  font-size: 16px;
+  transition: var(--base-transition); /* Smooth expand/collapse animation */
+}
+.user-details-card-body-content-text input.shadow-true {
+  box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+@media screen and (max-width: 768px) {
+  .user-details-card-body-content-text {
+    width: 100%;
+  }
 }
 
 .user-details-card-body-content-button {
@@ -161,6 +184,7 @@
   height: fit-content;
   width: 100%;
   height: 100%;
+  min-height: 500px;
 }
 
 /* .interests-selection-box {
@@ -194,17 +218,20 @@
   height: fit-content;
   width: 100%;
   height: 100%;
+  min-height: 500px;
+  flex-wrap: wrap;
   background: linear-gradient(270deg, #fe6b8b 30%, #ff8e53 90%);
 }
 
 .events-signup-listing {
   display: flex;
-  flex-direction: column;
+  /* flex-direction: column; */
   align-items: flex-start;
-  gap: 1rem;
+  gap: 2rem;
   padding: 1rem;
   font-size: 24px;
   margin: 5px 10px 0 10px;
+  width: 100%;
 }
 
 /* User Image */

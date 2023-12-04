@@ -103,7 +103,7 @@ const EventBoard = () => {
                   className="event-board-event"
                 >
                   <div className="zoom-effect">
-                    <EventCard {...event} height={600} />
+                    <EventCard {...event} eventCreator={event.user} height={600} />
                   </div>
                 </Link>
               ))}

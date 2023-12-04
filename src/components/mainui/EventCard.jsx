@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import "../../css/EventCard.css";
 import { AvatarImage } from "../commonElements";
-import { fetchImageId, fetchAndSetImageBase64 } from "../../handlers/api";
+import {
+  fetchAndSetImageBase64,
+  fetchImageByUsername,
+} from "../../handlers/api";
 
 const EventCard = ({
   width,
@@ -22,7 +25,7 @@ const EventCard = ({
   backgroundImage,
 }) => {
   const [imageBase64, setImageBase64] = useState(null);
-  const [imageId, setImageId] = useState([0]);
+  const [imageId, setImageId] = useState([]);
   const userAttending = (attendees || []).includes(
     localStorage.getItem("username") || ""
   );
@@ -41,13 +44,23 @@ const EventCard = ({
   //   setImageId(imageId);
   // };
 
-  const handleSettingImageBase64 = async () => {
-    const base64String = await fetchAndSetImageBase64(imageId);
-    setImageBase64(base64String);
-  };
+  useEffect(() => {
+    const fetchAndSetImage = async () => {
+      try {
+        const data = await fetchImageByUsername(username);
+        setImageId(data);
 
-  // FUNCTIONS
-  handleSettingImageBase64();
+        if (data) {
+          const base64String = await fetchAndSetImageBase64(data);
+          setImageBase64(base64String);
+        }
+      } catch (error) {
+        console.error("Error fetching image:", error);
+      }
+    };
+
+    fetchAndSetImage();
+  }, [username]);
 
   // // USEFFECT
   // useEffect(() => {
@@ -87,9 +100,11 @@ const EventCard = ({
           width={100}
           height={100}
           alt="image_alt"
+          style={{
+            objectFit: "cover",
+          }}
         />
       )}
-      {/* {console.log("userDatasss: ", userData)} */}
       <p className="match-tag">Match</p>
       <div
         className="card-content"
