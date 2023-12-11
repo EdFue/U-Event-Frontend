@@ -188,7 +188,7 @@ const RegistrationOverlay2 = ({ onClose, onRegisterEmail }) => {
             />
             <label htmlFor="password"> Password </label>
             <input
-              type="text"
+              type="password"
               id="password"
               data-testid="password"
               name="password"
@@ -198,7 +198,7 @@ const RegistrationOverlay2 = ({ onClose, onRegisterEmail }) => {
             />
             <label htmlFor="passwordConfirm"> Confirm Password </label>
             <input
-              type="text"
+              type="password"
               id="passwordConfirm"
               data-testid="password-confirm"
               name="passwordConfirm"

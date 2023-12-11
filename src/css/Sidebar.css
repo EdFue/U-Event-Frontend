@@ -38,7 +38,9 @@ a {
   left: 0;
   top: 50%;
   transform: translate(0, -50%);
-  z-index: inherit;
+  /* z-index: inherit; */
+  /* ADDED */
+  z-index: 100 !important;
   overflow: hidden;
 }
 
@@ -242,7 +244,6 @@ a {
 .sidebar-wrapper.hide {
   margin-right: 3rem;
   width: 50px;
-  z-index: 100;
 }
 
 @media (max-width: 1140px) {
@@ -278,7 +279,7 @@ a {
     z-index: 9999;
   }
   .sidebar.show {
-    height: 100vh;
+    height: 100%;
     left: 0;
     top: 0;
     transform: translate(0, 0px);
@@ -297,6 +298,10 @@ a {
   .nav-section::before,
   .hosted-section::before {
     background: #fff;
+  }
+  /* FIX */
+  .manage-events-header {
+    padding-top: 4rem;
   }
 }
 
